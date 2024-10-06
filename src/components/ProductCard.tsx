@@ -1,4 +1,3 @@
-// ProductCard.tsx
 import { Button, Grid, Card, CardContent, Typography, CardMedia, Box } from '@mui/material';
 import { Product } from '../types/Product';
 import { useDispatch } from 'react-redux'; 
@@ -9,7 +8,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { id, title, imageUrl, price, rating} = product; 
+  const { id, title, imageUrl, price, rating } = product; 
   const dispatch = useDispatch();
 
   const handleAddToCart = () => { 
@@ -18,6 +17,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       title,
       imageUrl,
       price,
+      quantity: 1
     })); 
   }; 
 

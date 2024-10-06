@@ -25,7 +25,8 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Product } from '../types/Product';
 import ProductCard from '../components/ProductCard'; 
 import { useNavigate } from 'react-router-dom'; 
-
+import { useSelector } from 'react-redux';
+import { CartState } from '../store/CartState';
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
@@ -65,107 +66,107 @@ const HomePage: React.FC = () => {
     },
     { 
       id: 5, 
-      title: "Awesome Product 1", 
+      title: "Innovative Tool", 
       imageUrl: "https://placehold.co/600x400",
-      price: 19.99,
-      rating: 4.5,
-      description: "A fantastic product that you simply must try!" 
+      price: 29.99,
+      rating: 4.7,
+      description: "An innovative tool that makes your life easier." 
     },
     {
       id: 6,
-      title: "Cool Gadget", 
+      title: "High-Tech Device", 
       imageUrl: "https://placehold.co/600x400",
-      price: 49.99, 
-      rating: 3.5,
-      description: "A cool gadget that everyone wants."
+      price: 99.99, 
+      rating: 4.2,
+      description: "A high-tech device for tech enthusiasts."
     },
     { 
       id: 7, 
-      title: "Stylish Accessory", 
+      title: "Elegant Watch", 
       imageUrl: "https://placehold.co/600x400", 
-      price: 24.99, 
-      rating: 4, 
-      description: "A stylish accessory to elevate your style!"
+      price: 199.99, 
+      rating: 4.8, 
+      description: "An elegant watch to complement your style."
     },
     {
       id: 8,
-      title: "Great Value Product",
+      title: "Portable Speaker",
       imageUrl: "https://placehold.co/600x400",
-      price: 10.99,
-      rating: 5, 
-      description: "The most affordable product on the market!" 
+      price: 59.99,
+      rating: 4.3, 
+      description: "A portable speaker with excellent sound quality." 
     },
     {
       id: 9,
-      title: "Great Value Product",
+      title: "Wireless Earbuds",
       imageUrl: "https://placehold.co/600x400",
-      price: 10.99,
-      rating: 5, 
-      description: "The most affordable product on the market"
+      price: 39.99,
+      rating: 4.1, 
+      description: "Wireless earbuds with great sound and comfort."
     },
     {
       id: 10,
-      title: "Great Value Product",
+      title: "Smart Home Hub",
       imageUrl: "https://placehold.co/600x400",
-      price: 10.99,
-      rating: 5, 
-      description: "The most affordable product on the market"
+      price: 79.99,
+      rating: 4.6, 
+      description: "A smart home hub to control all your devices."
     },
     {
       id: 11,
-      title: "Great Value Product",
+      title: "Fitness Tracker",
       imageUrl: "https://placehold.co/600x400",
-      price: 10.99,
-      rating: 5, 
-      description: "The most affordable product on the market"
+      price: 49.99,
+      rating: 4.4, 
+      description: "A fitness tracker to monitor your health."
     },
     {
       id: 12,
-      title: "Great Value Product",
+      title: "Gaming Console",
       imageUrl: "https://placehold.co/600x400",
-      price: 10.99,
-      rating: 5, 
-      description: "The most affordable product on the market"
+      price: 299.99,
+      rating: 4.9, 
+      description: "A gaming console for the ultimate gaming experience."
     },
     {
       id: 13,
-      title: "Great Value Product",
+      title: "Noise Cancelling Headphones",
       imageUrl: "https://placehold.co/600x400",
-      price: 10.99,
-      rating: 5, 
-      description: "The most affordable product on the market"
+      price: 89.99,
+      rating: 4.5, 
+      description: "Noise cancelling headphones for immersive sound."
     },
     {
       id: 14,
-      title: "Great Value Product",
+      title: "Smartphone",
       imageUrl: "https://placehold.co/600x400",
-      price: 10.99,
-      rating: 5, 
-      description: "The most affordable product on the market"
+      price: 699.99,
+      rating: 4.7, 
+      description: "A smartphone with the latest features and technology."
     },
     {
       id: 15,
-      title: "Great Value Product",
+      title: "Laptop",
       imageUrl: "https://placehold.co/600x400",
-      price: 10.99,
-      rating: 5, 
-      description: "The most affordable product on the market"
+      price: 999.99,
+      rating: 4.8, 
+      description: "A powerful laptop for work and play."
     },
     {
       id: 16,
-      title: "Great Value Product",
+      title: "Tablet",
       imageUrl: "https://placehold.co/600x400",
-      price: 10.99,
-      rating: 5, 
-      description: "The most affordable product on the market"
+      price: 399.99,
+      rating: 4.6, 
+      description: "A versatile tablet for entertainment and productivity."
     },
     {
       id: 17,
-      title: "Great Value Product",
+      title: "Smartwatch",
       imageUrl: "https://placehold.co/600x400",
-      price: 10.99,
-      rating: 5, 
-      description: "The most affordable product on the market"
+      price: 149.99,
+      rating: 4.4, 
+      description: "A smartwatch to keep you connected on the go."
     }
   ]);
   const [searchTerm, setSearchTerm] = useState(''); 
@@ -179,13 +180,17 @@ const HomePage: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  // Get a function to navigate (toCart is just an alias) 
   const navigate = useNavigate(); 
 
   const toCart = () => {
     navigate('/cart'); 
   };
-  
+
+  // Get cart items from Redux store
+  const { cartItems } = useSelector((state: { cart: CartState }) => state.cart);
+
+  // Calculate total number of items in the cart
+  const totalItemsInCart = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const drawer = (
     <div>
@@ -218,7 +223,7 @@ const HomePage: React.FC = () => {
             <MenuIcon />
           </IconButton> 
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}> 
-            {/* Logo or Title */}
+            {/* Logo */}
           </Typography> 
           <TextField
             fullWidth
@@ -233,7 +238,7 @@ const HomePage: React.FC = () => {
             </Typography> 
           </IconButton>
           <IconButton size="large" color="inherit" onClick={toCart}>
-            <Badge badgeContent={4} color="secondary"> 
+            <Badge badgeContent={totalItemsInCart} color="secondary"> 
               <ShoppingCartIcon /> 
             </Badge>
           </IconButton>

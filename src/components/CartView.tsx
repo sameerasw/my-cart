@@ -1,65 +1,79 @@
-// CartView.tsx
 
-import { 
-  ListItem, 
-  ListItemText, 
-  List, 
+import {
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Avatar,
+  Box,
+  IconButton,
+  TextField,
   Typography,
-  Grid, 
-  Container, 
-  ListItemIcon, 
-  Avatar, 
-  Box, 
-  IconButton,  
-  TextField,  // Add TextField for quantity
-  InputAdornment, // For the quantity input
 } from '@mui/material';
 import { CartItem } from '../store/CartItem';
-import { useDispatch } from 'react-redux'; 
+import { useDispatch } from 'react-redux';
+import { updateQuantity } from '../store/cartSlice';
 
-interface CartViewProps { 
-  cartItem: CartItem; 
-  handleRemove: (itemId: number) => void; 
+interface CartViewProps {
+  cartItem: CartItem;
+  handleRemove: (itemId: number) => void;
 }
 
 const CartView: React.FC<CartViewProps> = ({ cartItem, handleRemove }) => {
   const dispatch = useDispatch();
 
-  return ( 
-    <ListItem 
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const quantity = parseInt(e.target.value, 10);
+    if (quantity > 0) {
+      dispatch(updateQuantity({ id: cartItem.id, quantity }));
+    }
+  };
+
+  return (
+    <ListItem
       key={cartItem.id}
-      sx={{ 
+      sx={{
         display: 'flex',
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        padding: '10px 16px'
+        justifyContent: 'space-between',
+        alignItems: 'start',
+        padding: '10px 16px',
+        flexDirection: 'row',
       }}
     >
-      <ListItemIcon> 
-        <Avatar src={cartItem.imageUrl} alt={cartItem.title} />
-      </ListItemIcon> 
+    <ListItemIcon>
+      <Avatar src={cartItem.imageUrl} alt={cartItem.title} sx={{ width: 60, height: 60 }} />
+    </ListItemIcon>
+      <Box sx={{ display: 'flex', alignItems: 'start', flexDirection: 'column' }}>
 
-      <ListItemText 
-        primary={cartItem.title} 
-      />
+        <ListItemText
+          primary={cartItem.title}
+         sx={{ textAlign: 'left', fontWeight: 'bold', fontSize: '1.2rem' }}
+        />
 
-      <Box> 
-        {/* Display Price: */}
-        <Typography variant="subtitle1" color="text.secondary"> 
-          ${cartItem.price.toFixed(2)} {/* Format to two decimal places */} 
+      <Box sx={{ display: 'flex', alignItems: 'center', marginRight: '16px' }}>
+        <Typography variant="subtitle1" color="text.secondary">
+          ${cartItem.price.toFixed(2)}
         </Typography>
 
+        <TextField
+          type="number"
+          value={cartItem.quantity}
+          onChange={handleQuantityChange}
+          InputProps={{
+            inputProps: { min: 1 },
+          }}
+          sx={{ width: '60px', marginRight: '16px' }}
+        />
 
+        <IconButton
+          edge="end"
+          aria-label="delete"
+          onClick={() => handleRemove(cartItem.id)}
+        >
+          <Typography variant="body1">Remove</Typography>
+        </IconButton>
       </Box>
-
-      <IconButton 
-        edge="end"
-        aria-label="delete" 
-        onClick={() => handleRemove(cartItem.id)}
-      >
-        {/* <DeleteIcon /> */}
-      </IconButton>
-    </ListItem> 
+      </Box>
+    </ListItem>
   );
 };
 

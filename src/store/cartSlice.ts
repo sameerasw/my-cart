@@ -1,21 +1,22 @@
-//  cartSlice.ts 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'; 
-import { CartState} from './CartState';
+import { CartState } from './CartState';
 import { CartItem } from './CartItem';
 
 const initialState: CartState = {
   cartItems: [],
 };
 
-// cart actions. We are not using a backend so there is no call to cart API endpoint
 const cartSlice = createSlice({
   name: 'cart', 
   initialState, 
   reducers: { 
     addToCart(state, action: PayloadAction<CartItem>) {
-      const existingItem = state.cartItems.find(
-        (item) => item.id === action.payload.id
-      );
+      const existingItem = state.cartItems.find(item => item.id === action.payload.id);
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        state.cartItems.push({ ...action.payload, quantity: 1 });
+      }
     }, 
 
     removeItem(state, action: PayloadAction<number>) {
@@ -25,19 +26,21 @@ const cartSlice = createSlice({
     },
     
     clearCart(state) {
-        // Clear cart by assigning an empty array
-        state.cartItems = [];
+      state.cartItems = [];
     },
-    // add your 'proceedToCheckout'  action here 
+
+    updateQuantity(state, action: PayloadAction<{ id: number, quantity: number }>) {
+      const item = state.cartItems.find(item => item.id === action.payload.id);
+      if (item) {
+        item.quantity = action.payload.quantity;
+      }
+    },
+
     proceedToCheckout(state) {
-      // this function updates the 'cartItems' or even moves them into the 'checkout' array  
-      // to get data into an Order in the future - not required as of now as we are 
-      // working on a dummy implementation with local data
-      // (Optional: for future implementation) 
-      //  if there is an actual checkout (or order creation) involved, update state
+      // tbd
     }, 
   },
 }); 
 
-export const { addToCart, removeItem, clearCart, proceedToCheckout } = cartSlice.actions; 
-export default cartSlice.reducer; 
+export const { addToCart, removeItem, clearCart, updateQuantity, proceedToCheckout } = cartSlice.actions; 
+export default cartSlice.reducer;
