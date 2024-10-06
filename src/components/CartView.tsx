@@ -1,32 +1,66 @@
-import { useSelector } from 'react-redux';
-import { CartState } from '../store/CartState';
-import { ListItem, ListItemText, List, Typography, Grid, Container, ListItemIcon, Avatar, Box } from '@mui/material'; 
+// CartView.tsx
 
-const CartView: React.FC = () => {
-  const { cartItems } = useSelector((state: { cart: CartState }) => state.cart); 
+import { 
+  ListItem, 
+  ListItemText, 
+  List, 
+  Typography,
+  Grid, 
+  Container, 
+  ListItemIcon, 
+  Avatar, 
+  Box, 
+  IconButton,  
+  TextField,  // Add TextField for quantity
+  InputAdornment, // For the quantity input
+} from '@mui/material';
+import { CartItem } from '../store/CartItem';
+import { useDispatch } from 'react-redux'; 
+
+interface CartViewProps { 
+  cartItem: CartItem; 
+  handleRemove: (itemId: number) => void; 
+}
+
+const CartView: React.FC<CartViewProps> = ({ cartItem, handleRemove }) => {
+  const dispatch = useDispatch();
 
   return ( 
-    <Container maxWidth="lg" sx={{ padding: 2, mt: 2 }}> 
-      <Typography variant="h4" gutterBottom>My Cart</Typography>
-      {cartItems.length === 0 ? ( 
-        <Typography variant="body1" align="center" mt={2}> 
-          Your cart is empty.
+    <ListItem 
+      key={cartItem.id}
+      sx={{ 
+        display: 'flex',
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        padding: '10px 16px'
+      }}
+    >
+      <ListItemIcon> 
+        <Avatar src={cartItem.imageUrl} alt={cartItem.title} />
+      </ListItemIcon> 
+
+      <ListItemText 
+        primary={cartItem.title} 
+      />
+
+      <Box> 
+        {/* Display Price: */}
+        <Typography variant="subtitle1" color="text.secondary"> 
+          ${cartItem.price.toFixed(2)} {/* Format to two decimal places */} 
         </Typography>
-      ) : (
-        <List>
-          {cartItems.map((item) => ( 
-            <ListItem key={item.id}> 
-              <ListItemIcon> 
-                <Avatar src={item.imageUrl} />
-              </ListItemIcon> 
-              <ListItemText primary={item.title} /> 
-              
-            </ListItem>
-          ))}
-        </List>
-      )} 
-    </Container> 
-  ); 
+
+
+      </Box>
+
+      <IconButton 
+        edge="end"
+        aria-label="delete" 
+        onClick={() => handleRemove(cartItem.id)}
+      >
+        {/* <DeleteIcon /> */}
+      </IconButton>
+    </ListItem> 
+  );
 };
 
 export default CartView;

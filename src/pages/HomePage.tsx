@@ -1,5 +1,3 @@
-// src/pages/HomePage.tsx 
-
 import React, { useState } from 'react';
 import { 
   Grid,
@@ -26,6 +24,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'; 
 import { Product } from '../types/Product';
 import ProductCard from '../components/ProductCard'; 
+import { useNavigate } from 'react-router-dom'; 
+
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
@@ -179,6 +179,14 @@ const HomePage: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
+  // Get a function to navigate (toCart is just an alias) 
+  const navigate = useNavigate(); 
+
+  const toCart = () => {
+    navigate('/cart'); 
+  };
+  
+
   const drawer = (
     <div>
       <List>
@@ -224,7 +232,7 @@ const HomePage: React.FC = () => {
               Login 
             </Typography> 
           </IconButton>
-          <IconButton size="large" color="inherit">
+          <IconButton size="large" color="inherit" onClick={toCart}>
             <Badge badgeContent={4} color="secondary"> 
               <ShoppingCartIcon /> 
             </Badge>

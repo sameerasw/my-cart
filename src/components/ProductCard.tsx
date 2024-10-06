@@ -9,7 +9,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { id, title, imageUrl, price, rating, description } = product; 
+  const { id, title, imageUrl, price, rating} = product; 
   const dispatch = useDispatch();
 
   const handleAddToCart = () => { 
@@ -17,7 +17,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       id, 
       title,
       imageUrl,
-      price, 
+      price,
     })); 
   }; 
 
