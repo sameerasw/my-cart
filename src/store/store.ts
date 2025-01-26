@@ -1,13 +1,11 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import rootReducer from './rootReducer'; 
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from './rootReducer';
+import { itemApi } from '../api/itemApiSlice';
 
-const composeEnhancers =
-  (typeof window !== 'undefined' &&
-    (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
-  compose;
-
-const store = createStore(
-  rootReducer, 
-);
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(itemApi.middleware),
+});
 
 export default store;

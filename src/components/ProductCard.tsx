@@ -1,22 +1,22 @@
 import { Button, Grid, Card, CardContent, Typography, CardMedia, Box } from '@mui/material';
-import { Product } from '../types/Product';
+import { EventItem } from '../types/Item';
 import { useDispatch } from 'react-redux'; 
 import { addToCart } from '../store/cartSlice'; 
 
 interface ProductCardProps {
-  product: Product; 
+  product: EventItem; 
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { id, title, imageUrl, price, rating } = product; 
+  const { id, eventName, image, ticketPrice, availableTickets } = product; 
   const dispatch = useDispatch();
 
   const handleAddToCart = () => { 
     dispatch(addToCart({
       id, 
-      title,
-      imageUrl,
-      price,
+      title: eventName,
+      imageUrl: image,
+      price: ticketPrice,
       quantity: 1
     })); 
   }; 
@@ -27,19 +27,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <CardMedia 
           component="img" 
           height="140" 
-          image={imageUrl}
-          alt={title}
+          image={image}
+          alt={eventName}
           sx={{ objectFit: "cover" }}
         />
         <CardContent> 
           <Typography gutterBottom variant="h5" component="div"> 
-            {title} 
+            {eventName} 
           </Typography>
           <Typography variant="body2"> 
-            Price: ${price} 
+            Price: ${ticketPrice} 
           </Typography> 
           <Typography variant="body2"> 
-            Ratings: {rating}/5
+            Available Tickets: {availableTickets}
           </Typography> 
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
             <Button variant="contained" onClick={handleAddToCart}>
