@@ -18,7 +18,8 @@ import {
   useTheme,
   CssBaseline,
   useMediaQuery,
-  Box
+  Box,
+  Button
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -27,6 +28,7 @@ import { useSelector } from 'react-redux';
 import { CartState } from '../store/CartState';
 import { useGetAllEventsQuery } from '../api/itemApiSlice';
 import ProductCard from '../components/ProductCard';
+import { UserState } from '../store/AuthState';
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
@@ -52,6 +54,9 @@ const HomePage: React.FC = () => {
 
   // Get cart items from Redux store
   const { cartItems } = useSelector((state: { cart: CartState }) => state.cart);
+
+  // Get user info from Redux store
+  const { name } = useSelector((state: { auth: UserState }) => state.auth);
 
   // Calculate total number of items in the cart
   const totalItemsInCart = cartItems.reduce((total, item) => total + item.quantity, 0);
@@ -89,11 +94,20 @@ const HomePage: React.FC = () => {
             onChange={handleSearchChange}
             sx={{ width: '300px', marginLeft: 'auto', marginRight: '10px' }}
           />
-          <IconButton size="large" color="inherit">
-            <Typography variant="h6" noWrap component="div">
-              Login
-            </Typography>
-          </IconButton>
+          {name ? (
+            <Button variant="contained" onClick={() => navigate('/profile')}>
+              {name}
+            </Button>
+          ) : (
+            <>
+              <Button variant="contained" onClick={() => navigate('/login')} sx={{ marginRight: 1 }}>
+                Login
+              </Button>
+              <Button variant="contained" onClick={() => navigate('/register')}>
+                Register
+              </Button>
+            </>
+          )}
           <IconButton size="large" color="inherit" onClick={toCart}>
             <Badge badgeContent={totalItemsInCart} color="secondary">
               <ShoppingCartIcon />
