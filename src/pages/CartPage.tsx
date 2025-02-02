@@ -17,6 +17,9 @@ const CartPage: React.FC = () => {
 
   const handleRemoveFromCart = (itemId: number) => {
     dispatch(removeItem(itemId));
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const updatedCart = cart.filter((item: any) => item.id !== itemId);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
   const handleBackToHome = () => {
@@ -25,6 +28,7 @@ const CartPage: React.FC = () => {
 
   const handleClearCart = () => {
     dispatch(clearCart());
+    localStorage.removeItem('cart');
   };
 
   return (

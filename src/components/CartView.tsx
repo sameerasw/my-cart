@@ -54,15 +54,10 @@ const CartView: React.FC<CartViewProps> = ({ cartItem, handleRemove }) => {
           ${cartItem.price.toFixed(2)}
         </Typography>
 
-        <TextField
-          type="number"
-          value={cartItem.quantity}
-          onChange={handleQuantityChange}
-          InputProps={{
-            inputProps: { min: 1 },
-          }}
-          sx={{ width: '60px', marginRight: '16px' }}
-        />
+
+        <Typography variant="subtitle1" color="text.secondary" sx={{ marginLeft: '16px' }}>
+            ({cartItem.quantity})
+        </Typography>
 
         <IconButton
           edge="end"

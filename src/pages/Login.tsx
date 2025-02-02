@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Typography, Box, Alert, Paper, FormControlLabel, Switch, CircularProgress } from '@mui/material';
+import { TextField, Button, Typography, Box, Alert, Paper, FormControlLabel, Switch, CircularProgress, AppBar, useTheme, Badge, IconButton, Toolbar } from '@mui/material';
 import { useLoginMutation } from '../api/sessionApiSlice';
 import { useDispatch } from 'react-redux';
 import { setAuth } from '../store/authSlice';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { UserType } from '../types/User';
 
 interface LoginProps {
@@ -11,6 +12,7 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
+  const theme = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState<UserType>('CUSTOMER');
@@ -41,12 +43,18 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     }
   };
 
-  const handleUserTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserType(event.target.checked ? 'VENDOR' : 'CUSTOMER');
-  };
-
   return (
     <Paper>
+    <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
+      <Toolbar>
+      <IconButton onClick={() => navigate('/')}>
+        <ArrowBackIcon sx={{ color: 'white' }} />
+      </IconButton>
+        <Typography variant="h5" sx={{ ml: 2, flexGrow: 1 }}>
+          My Cart App
+        </Typography>
+      </Toolbar>
+    </AppBar>
       <Box sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -57,13 +65,8 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         margin: 'auto',
       }}>
         <Typography component="h1" variant="h5">
-          Login to Ticketin
+          Login to My Cart
         </Typography>
-        <FormControlLabel
-          control={<Switch checked={userType === 'VENDOR'} onChange={handleUserTypeChange} />}
-          label={userType === 'VENDOR' ? 'Login as Vendor' : 'Login as Customer'}
-          sx={{ mt: 2 }}
-        />
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
