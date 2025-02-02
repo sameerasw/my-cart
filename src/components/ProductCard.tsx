@@ -1,29 +1,23 @@
-import { Button, Grid, Card, CardContent, Typography, CardMedia, Box } from '@mui/material';
+import { Grid, Card, CardContent, Typography, CardMedia, Box, Rating } from '@mui/material';
 import { EventItem } from '../types/Item';
-import { useDispatch } from 'react-redux'; 
-import { addToCart } from '../store/cartSlice'; 
 
 interface ProductCardProps {
   product: EventItem; 
+  onClick: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { id, eventName, image, ticketPrice, availableTickets } = product; 
-  const dispatch = useDispatch();
-
-  const handleAddToCart = () => { 
-    dispatch(addToCart({
-      id, 
-      title: eventName,
-      imageUrl: image,
-      price: ticketPrice,
-      quantity: 1
-    })); 
-  }; 
+const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
+  const { eventName, image, ticketPrice, availableTickets, avgRating } = product; 
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}> 
-      <Card> 
+      <Card onClick={onClick} sx={{
+        cursor: "pointer", 
+        '&:hover': {
+          boxShadow: 2,
+          backgroundColor: "#eeeeee"
+        }
+      }}> 
         <CardMedia 
           component="img" 
           height="140" 
@@ -41,10 +35,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <Typography variant="body2"> 
             Available Tickets: {availableTickets}
           </Typography> 
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Button variant="contained" onClick={handleAddToCart}>
-              Add to Cart
-            </Button> 
+          <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+            <Rating value={avgRating} readOnly precision={0.5} />
+            <Typography variant="body2" sx={{ ml: 1 }}>
+              {avgRating.toFixed(1)}
+            </Typography>
           </Box>
         </CardContent> 
       </Card> 
