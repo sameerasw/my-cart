@@ -37,7 +37,7 @@ const cartSlice = createSlice({
     },
 
     proceedToCheckout(state) {
-      // tbd
+      // not implemented
     }, 
 
     initializeCart(state, action: PayloadAction<CartItem[]>) {

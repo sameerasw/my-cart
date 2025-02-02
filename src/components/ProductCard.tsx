@@ -1,4 +1,4 @@
-import { Button, Grid, Card, CardContent, Typography, CardMedia, Box, Rating } from '@mui/material';
+import { Grid, Card, CardContent, Typography, CardMedia, Box, Rating } from '@mui/material';
 import { EventItem } from '../types/Item';
 
 interface ProductCardProps {
@@ -11,7 +11,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}> 
-      <Card onClick={onClick}> 
+      <Card onClick={onClick} sx={{
+        cursor: "pointer", 
+        '&:hover': {
+          boxShadow: 2,
+          backgroundColor: "#eeeeee"
+        }
+      }}> 
         <CardMedia 
           component="img" 
           height="140" 

@@ -32,7 +32,18 @@ const HomePage: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<EventItem | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { data: products = [], isLoading, error } = useGetAllEventsQuery();
+  const [products, setProducts] = useState<EventItem[]>([]);
+  const { data, isLoading, error, refetch } = useGetAllEventsQuery();
+
+  useEffect(() => {
+    if (data) {
+      setProducts(data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    refetch();
+  }, [dialogOpen, refetch]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -42,15 +53,14 @@ const HomePage: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const { userId: customerId, name } = useSelector((state: { auth: UserState }) => state.auth);
-  const { data: cartItems = [], refetch } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
+  const { userId: customerId } = useSelector((state: { auth: UserState }) => state.auth);
+  const { refetch: refetchCartItems } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
 
   useEffect(() => {
     if (customerId) {
-      refetch();
+      refetchCartItems();
     }
-  }, [customerId]);
-
+  }, [customerId, dialogOpen, refetchCartItems]);
 
   const handleProductClick = (product: EventItem) => {
     setSelectedProduct(product);
@@ -60,6 +70,7 @@ const HomePage: React.FC = () => {
   const handleDialogClose = () => {
     setDialogOpen(false);
     setSelectedProduct(null);
+    refetch(); // Reload the data when closing the dialog
   };
 
   const drawer = (
@@ -99,26 +110,29 @@ const HomePage: React.FC = () => {
         sx={{
           flexGrow: 1,
           paddingTop: '100px',
-          backgroundColor: '#e7e8e8'
         }}
       >
         <Container maxWidth="lg" sx={{ marginTop: 2, paddingBottom: 2 }}>
           <Typography variant="h4" gutterBottom mb={2}>Our Products</Typography>
-          {isLoading ? (
-            <Typography>Loading...</Typography>
-          ) : error ? (
-            <Typography>Error loading products</Typography>
-          ) : (
-            <Grid container spacing={3}>
-              {products
-                .filter((product) =>
-                  product.eventName.toLowerCase().includes(searchTerm.toLowerCase())
-                )
-                .map((product) => (
-                  <ProductCard key={product.id} product={product} onClick={() => handleProductClick(product)} />
-                ))}
-            </Grid>
-          )}
+          {(() => {
+            if (isLoading) {
+              return <Typography>Loading...</Typography>;
+            } else if (error) {
+              return <Typography>Error loading products</Typography>;
+            } else {
+              return (
+                <Grid container spacing={3}>
+                  {products
+                    .filter((product) =>
+                      product.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .map((product) => (
+                      <ProductCard key={product.id} product={product} onClick={() => handleProductClick(product)} />
+                    ))}
+                </Grid>
+              );
+            }
+          })()}
         </Container>
       </Box>
       <ProductDetailsDialog open={dialogOpen} onClose={handleDialogClose} product={selectedProduct} />

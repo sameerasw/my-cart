@@ -29,8 +29,6 @@ const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({ open, onClo
     if (!open) {
       setAddedToCart(false);
       setRating(null);
-    } else {
-      refetchRating();
     }
   }, [open, refetchRating]);
 
@@ -94,7 +92,7 @@ const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({ open, onClo
               sx={{ objectFit: "cover", marginBottom: 2 }}
             />
             <Typography variant="h6">Price: ${product.ticketPrice}</Typography>
-            <Typography variant="body1" color="textSecondary" paragraph>
+            <Typography variant="body1" color="textSecondary">
               {product.details}
             </Typography>
             <Typography variant="body2" color="textSecondary">
