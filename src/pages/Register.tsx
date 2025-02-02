@@ -4,6 +4,7 @@ import { TextField, Button, Typography, Box, Alert, Paper, FormControlLabel, Swi
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRegisterMutation } from '../api/sessionApiSlice';
 import { UserType } from '../types/User';
+import NavBar from '../components/NavBar';
 
 const Register = () => {
   const theme = useTheme();
@@ -47,16 +48,7 @@ const Register = () => {
 
   return (
     <Paper>
-    <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
-      <Toolbar>
-      <IconButton onClick={() => navigate('/')}>
-        <ArrowBackIcon sx={{ color: 'white' }} />
-      </IconButton>
-        <Typography variant="h5" sx={{ ml: 2, flexGrow: 1 }}>
-          My Cart App
-        </Typography>
-      </Toolbar>
-    </AppBar>
+    <NavBar accountVisible={false} backEnabled={true} />
       <Box sx={{
         display: 'flex',
         flexDirection: 'column',

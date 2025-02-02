@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { setAuth } from '../store/authSlice';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { UserType } from '../types/User';
+import NavBar from '../components/NavBar';
 
 const Login = () => {
   const theme = useTheme();
@@ -41,16 +42,7 @@ const Login = () => {
 
   return (
     <Paper>
-    <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
-      <Toolbar>
-      <IconButton onClick={() => navigate('/')}>
-        <ArrowBackIcon sx={{ color: 'white' }} />
-      </IconButton>
-        <Typography variant="h5" sx={{ ml: 2, flexGrow: 1 }}>
-          My Cart App
-        </Typography>
-      </Toolbar>
-    </AppBar>
+    <NavBar accountVisible={false} backEnabled={true} />
       <Box sx={{
         display: 'flex',
         flexDirection: 'column',
