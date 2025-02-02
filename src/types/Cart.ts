@@ -3,4 +3,7 @@ export interface CartItem {
     customerId: number;
     eventItemId: number;
     quantity: number;
+    eventName: string;
+    ticketPrice: number;
+    image: string;
   }
