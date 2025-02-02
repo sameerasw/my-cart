@@ -13,14 +13,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     <Grid item xs={12} sm={6} md={4} lg={3}> 
       <Card onClick={onClick} sx={{
         cursor: "pointer", 
+        width: "25em",
+        borderRadius: 2,
+        transition: "all 0.2s ease-in-out",
+        // outline: "gray solid 1px",
         '&:hover': {
-          boxShadow: 2,
-          backgroundColor: "#eeeeee"
+          boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+          scale: 1.05,
         }
       }}> 
         <CardMedia 
           component="img" 
-          height="140" 
+          height="250em" 
           image={image}
           alt={eventName}
           sx={{ objectFit: "cover" }}

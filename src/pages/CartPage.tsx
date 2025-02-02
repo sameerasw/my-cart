@@ -20,6 +20,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
 import { useGetCartItemsByCustomerIdQuery, useRemoveCartItemMutation, useClearCartMutation } from '../api/cartApiSlice';
 import { UserState } from '../store/AuthState';
+import NavBar from '../components/NavBar';
 
 const CartPage: React.FC = () => {
   const theme = useTheme();
@@ -77,17 +78,7 @@ const CartPage: React.FC = () => {
   
   return (
     <Container maxWidth="lg" sx={{ padding: 2, mt: 2 }}>
-
-      <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
-        <Toolbar sx={{ alignItems: 'center', alignContent: 'center' }}>
-          <IconButton onClick={handleBackToHome}>
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h5" align="center" sx={{ ml: 2 }}>
-            Shopping Cart
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <NavBar backEnabled={true}/>
 
       {cartItems.length === 0 ? (
         <Typography variant="body1" align="center" mt={2} sx={{ mt: 6 }}>
