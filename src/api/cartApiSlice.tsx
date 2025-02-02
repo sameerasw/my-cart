@@ -21,6 +21,12 @@ export const cartApi = createApi({
         method: 'DELETE',
       }),
     }),
+    clearCart: builder.mutation<void, number>({
+      query: (customerId) => ({
+        url: `/cart/clear/${customerId}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
@@ -28,4 +34,5 @@ export const {
   useGetCartItemsByCustomerIdQuery,
   useAddCartItemMutation,
   useRemoveCartItemMutation,
+  useClearCartMutation,
 } = cartApi;

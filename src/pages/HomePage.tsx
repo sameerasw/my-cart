@@ -29,6 +29,8 @@ import { CartState } from '../store/CartState';
 import { useGetAllEventsQuery } from '../api/itemApiSlice';
 import ProductCard from '../components/ProductCard';
 import { UserState } from '../store/AuthState';
+import { useGetCartItemsByCustomerIdQuery, useAddCartItemMutation } from '../api/cartApiSlice';
+import NavBar from '../components/NavBar';
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
@@ -48,18 +50,36 @@ const HomePage: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const { userId: customerId, name } = useSelector((state: { auth: UserState }) => state.auth);
+  const { data: cartItems = [], refetch } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
+  const [addCartItem] = useAddCartItemMutation();
+
+  useEffect(() => {
+    if (customerId) {
+      refetch();
+    }
+  }, [customerId]);
+
   const toCart = () => {
-    navigate('/cart');
+    if (!customerId) {
+      navigate('/login');
+    } else {
+      navigate('/cart');
+    }
   };
 
-  // Get cart items from Redux store
-  const { cartItems } = useSelector((state: { cart: CartState }) => state.cart);
-
-  // Get user info from Redux store
-  const { name } = useSelector((state: { auth: UserState }) => state.auth);
-
-  // Calculate total number of items in the cart
-  const totalItemsInCart = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const handleAddToCart = async (productId: number) => {
+    if (!customerId) {
+      navigate('/login');
+    } else {
+      try {
+        await addCartItem({ customerId, eventItemId: productId, quantity: 1 }).unwrap();
+        refetch(); // Reload the cart items list
+      } catch (error) {
+        console.error('Failed to add item to cart:', error);
+      }
+    }
+  };
 
   const drawer = (
     <div>
@@ -79,43 +99,7 @@ const HomePage: React.FC = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-
-      <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
-        <Toolbar>
-          <Typography variant="h5" sx={{ ml: 2, flexGrow: 1 }}>
-            My Cart App
-          </Typography>
-          <TextField
-            fullWidth
-            label="Search"
-            variant="outlined"
-            size='small'
-            value={searchTerm}
-            onChange={handleSearchChange}
-            sx={{ width: '300px', marginLeft: 'auto', marginRight: '10px' }}
-          />
-          {name ? (
-            <Button variant="contained" onClick={() => navigate('/profile')}>
-              {name}
-            </Button>
-          ) : (
-            <>
-              <Button variant="contained" onClick={() => navigate('/login')} sx={{ marginRight: 1 }}>
-                Login
-              </Button>
-              <Button variant="contained" onClick={() => navigate('/register')}>
-                Register
-              </Button>
-            </>
-          )}
-          <IconButton size="large" color="inherit" onClick={toCart}>
-            <Badge badgeContent={totalItemsInCart} color="secondary">
-              <ShoppingCartIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-
+      <NavBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
       <Drawer
         variant={isMobile ? "temporary" : "permanent"}
         open={mobileOpen}
@@ -150,7 +134,7 @@ const HomePage: React.FC = () => {
                   product.eventName.toLowerCase().includes(searchTerm.toLowerCase())
                 )
                 .map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product.id)} />
                 ))}
             </Grid>
           )}

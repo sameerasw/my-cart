@@ -5,9 +5,10 @@ import { addToCart } from '../store/cartSlice';
 
 interface ProductCardProps {
   product: EventItem; 
+  onAddToCart: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   const { id, eventName, image, ticketPrice, availableTickets, avgRating } = product; 
   const dispatch = useDispatch();
 
@@ -59,7 +60,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Button variant="contained" onClick={handleAddToCart}>
+            <Button variant="contained" onClick={onAddToCart}>
               Add to Cart
             </Button> 
           </Box>
