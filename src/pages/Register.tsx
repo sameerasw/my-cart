@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Typography, Box, Alert, Paper, FormControlLabel, Switch, CircularProgress } from '@mui/material';
+import { TextField, Button, Typography, Box, Alert, Paper, FormControlLabel, Switch, CircularProgress, AppBar, Toolbar, useTheme, IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRegisterMutation } from '../api/sessionApiSlice';
 import { UserType } from '../types/User';
 
-interface RegisterProps {
-  onRegisterSuccess: () => void;
-}
-
-const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
+const Register = () => {
+  const theme = useTheme();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,16 +16,23 @@ const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
   const navigate = useNavigate();
   const [register, { isLoading }] = useRegisterMutation();
 
+  const onRegisterSuccess = () => {
+    alert('Registration successful. Please login to continue.');
+    navigate('/login');
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     try {
       await register({ name, email, password, userType }).unwrap();
       onRegisterSuccess();
-      navigate('/login');
     } catch (err: any) {
+      console.error('Failed to register:', err);
       if (err.status === 409) {
         setError('Email already exists');
+      } else if (err.status === 201) {
+        onRegisterSuccess();
       } else {
         setError('Registration failed');
       }
@@ -42,6 +47,16 @@ const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
 
   return (
     <Paper>
+    <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
+      <Toolbar>
+      <IconButton onClick={() => navigate('/')}>
+        <ArrowBackIcon sx={{ color: 'white' }} />
+      </IconButton>
+        <Typography variant="h5" sx={{ ml: 2, flexGrow: 1 }}>
+          My Cart App
+        </Typography>
+      </Toolbar>
+    </AppBar>
       <Box sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -52,12 +67,11 @@ const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
         margin: 'auto',
       }}>
         <Typography component="h1" variant="h5">
-          Register for Ticketin
+          Register for My Cart
         </Typography>
         <FormControlLabel
           control={<Switch checked={userType === 'VENDOR'} onChange={handleUserTypeChange} />}
-          label={userType === 'VENDOR' ? 'Register as Vendor' : 'Register as Customer'}
-          sx={{ mt: 2 }}
+          label="Vendor"
         />
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField

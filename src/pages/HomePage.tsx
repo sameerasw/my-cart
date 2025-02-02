@@ -1,42 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Grid,
+  Grid2 as Grid,
   Container,
-  TextField,
   Typography,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Badge,
   Drawer,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Divider,
   useTheme,
   CssBaseline,
   useMediaQuery,
   Box,
-  Button
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { CartState } from '../store/CartState';
 import { useGetAllEventsQuery } from '../api/itemApiSlice';
 import ProductCard from '../components/ProductCard';
 import { UserState } from '../store/AuthState';
+import { useGetCartItemsByCustomerIdQuery } from '../api/cartApiSlice';
+import NavBar from '../components/NavBar';
+import ProductDetailsDialog from '../components/ProductDetailsDialog';
+import { EventItem } from '../types/Item';
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<EventItem | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { data: products = [], isLoading, error } = useGetAllEventsQuery();
+  const [products, setProducts] = useState<EventItem[]>([]);
+  const { data, isLoading, error, refetch } = useGetAllEventsQuery();
+
+  useEffect(() => {
+    if (data) {
+      setProducts(data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    refetch();
+  }, [dialogOpen, refetch]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -46,20 +53,25 @@ const HomePage: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const navigate = useNavigate();
+  const { userId: customerId } = useSelector((state: { auth: UserState }) => state.auth);
+  const { refetch: refetchCartItems } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
 
-  const toCart = () => {
-    navigate('/cart');
+  useEffect(() => {
+    if (customerId) {
+      refetchCartItems();
+    }
+  }, [customerId, dialogOpen, refetchCartItems]);
+
+  const handleProductClick = (product: EventItem) => {
+    setSelectedProduct(product);
+    setDialogOpen(true);
   };
 
-  // Get cart items from Redux store
-  const { cartItems } = useSelector((state: { cart: CartState }) => state.cart);
-
-  // Get user info from Redux store
-  const { name } = useSelector((state: { auth: UserState }) => state.auth);
-
-  // Calculate total number of items in the cart
-  const totalItemsInCart = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setSelectedProduct(null);
+    refetch(); // Reload the data when closing the dialog
+  };
 
   const drawer = (
     <div>
@@ -79,43 +91,7 @@ const HomePage: React.FC = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-
-      <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
-        <Toolbar>
-          <Typography variant="h5" sx={{ ml: 2, flexGrow: 1 }}>
-            My Cart App
-          </Typography>
-          <TextField
-            fullWidth
-            label="Search"
-            variant="outlined"
-            size='small'
-            value={searchTerm}
-            onChange={handleSearchChange}
-            sx={{ width: '300px', marginLeft: 'auto', marginRight: '10px' }}
-          />
-          {name ? (
-            <Button variant="contained" onClick={() => navigate('/profile')}>
-              {name}
-            </Button>
-          ) : (
-            <>
-              <Button variant="contained" onClick={() => navigate('/login')} sx={{ marginRight: 1 }}>
-                Login
-              </Button>
-              <Button variant="contained" onClick={() => navigate('/register')}>
-                Register
-              </Button>
-            </>
-          )}
-          <IconButton size="large" color="inherit" onClick={toCart}>
-            <Badge badgeContent={totalItemsInCart} color="secondary">
-              <ShoppingCartIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-
+      <NavBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
       <Drawer
         variant={isMobile ? "temporary" : "permanent"}
         open={mobileOpen}
@@ -134,28 +110,32 @@ const HomePage: React.FC = () => {
         sx={{
           flexGrow: 1,
           paddingTop: '100px',
-          backgroundColor: '#e7e8e8'
         }}
       >
         <Container maxWidth="lg" sx={{ marginTop: 2, paddingBottom: 2 }}>
           <Typography variant="h4" gutterBottom mb={2}>Our Products</Typography>
-          {isLoading ? (
-            <Typography>Loading...</Typography>
-          ) : error ? (
-            <Typography>Error loading products</Typography>
-          ) : (
-            <Grid container spacing={3}>
-              {products
-                .filter((product) =>
-                  product.eventName.toLowerCase().includes(searchTerm.toLowerCase())
-                )
-                .map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-            </Grid>
-          )}
+          {(() => {
+            if (isLoading) {
+              return <Typography>Loading...</Typography>;
+            } else if (error) {
+              return <Typography>Error loading products</Typography>;
+            } else {
+              return (
+                <Grid container spacing={3}>
+                  {products
+                    .filter((product) =>
+                      product.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .map((product) => (
+                      <ProductCard key={product.id} product={product} onClick={() => handleProductClick(product)} />
+                    ))}
+                </Grid>
+              );
+            }
+          })()}
         </Container>
       </Box>
+      <ProductDetailsDialog open={dialogOpen} onClose={handleDialogClose} product={selectedProduct} />
     </Box>
   );
 };

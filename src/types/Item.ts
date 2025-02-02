@@ -11,6 +11,7 @@ export interface EventItem {
     vendorName: string;
     vendorId: number;
     availableTickets: number;
+    avgRating: number;
   }
   
   export interface TicketDTO {
