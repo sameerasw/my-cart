@@ -15,9 +15,9 @@ export const sessionApi = createApi({
         body: { email, password, userType },
       }),
     }),
-    register: builder.mutation<{ message: string }, { name: string; email: string; password: string; userType: UserType }>({
+    register: builder.mutation<any, { name: string; email: string; password: string; userType: UserType }>({
       query: ({ name, email, password, userType }) => ({
-        url: `/${userType}`,
+        url: `/customers`,
         method: 'POST',
         body: { name, email, password },
       }),

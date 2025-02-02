@@ -5,11 +5,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRegisterMutation } from '../api/sessionApiSlice';
 import { UserType } from '../types/User';
 
-interface RegisterProps {
-  onRegisterSuccess: () => void;
-}
-
-const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
+const Register = () => {
   const theme = useTheme();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -20,16 +16,23 @@ const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
   const navigate = useNavigate();
   const [register, { isLoading }] = useRegisterMutation();
 
+  const onRegisterSuccess = () => {
+    alert('Registration successful. Please login to continue.');
+    navigate('/login');
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     try {
       await register({ name, email, password, userType }).unwrap();
       onRegisterSuccess();
-      navigate('/login');
     } catch (err: any) {
+      console.error('Failed to register:', err);
       if (err.status === 409) {
         setError('Email already exists');
+      } else if (err.status === 201) {
+        onRegisterSuccess();
       } else {
         setError('Registration failed');
       }
@@ -66,6 +69,10 @@ const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
         <Typography component="h1" variant="h5">
           Register for My Cart
         </Typography>
+        <FormControlLabel
+          control={<Switch checked={userType === 'VENDOR'} onChange={handleUserTypeChange} />}
+          label="Vendor"
+        />
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"

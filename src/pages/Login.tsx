@@ -7,11 +7,7 @@ import { setAuth } from '../store/authSlice';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { UserType } from '../types/User';
 
-interface LoginProps {
-  onLoginSuccess: (token: string, userId: number, name: string, email: string, userType: string) => void;
-}
-
-const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
+const Login = () => {
   const theme = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

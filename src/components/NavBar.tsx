@@ -43,7 +43,7 @@ const NavBar: React.FC<NavBarProps> = ({ searchTerm, onSearchChange }) => {
           />
         )}
         {name ? (
-          <Button variant="contained" onClick={() => navigate('/profile')}>
+          <Button variant="contained" onClick={() => navigate('/login')}>
             {name}
           </Button>
         ) : (

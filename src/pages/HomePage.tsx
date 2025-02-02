@@ -1,42 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Grid,
+  Grid2 as Grid,
   Container,
-  TextField,
   Typography,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Badge,
   Drawer,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Divider,
   useTheme,
   CssBaseline,
   useMediaQuery,
   Box,
-  Button
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { CartState } from '../store/CartState';
 import { useGetAllEventsQuery } from '../api/itemApiSlice';
 import ProductCard from '../components/ProductCard';
 import { UserState } from '../store/AuthState';
-import { useGetCartItemsByCustomerIdQuery, useAddCartItemMutation } from '../api/cartApiSlice';
+import { useGetCartItemsByCustomerIdQuery } from '../api/cartApiSlice';
 import NavBar from '../components/NavBar';
+import ProductDetailsDialog from '../components/ProductDetailsDialog';
+import { EventItem } from '../types/Item';
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<EventItem | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const { data: products = [], isLoading, error } = useGetAllEventsQuery();
 
@@ -48,11 +42,8 @@ const HomePage: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const navigate = useNavigate();
-
   const { userId: customerId, name } = useSelector((state: { auth: UserState }) => state.auth);
   const { data: cartItems = [], refetch } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
-  const [addCartItem] = useAddCartItemMutation();
 
   useEffect(() => {
     if (customerId) {
@@ -60,25 +51,15 @@ const HomePage: React.FC = () => {
     }
   }, [customerId]);
 
-  const toCart = () => {
-    if (!customerId) {
-      navigate('/login');
-    } else {
-      navigate('/cart');
-    }
+
+  const handleProductClick = (product: EventItem) => {
+    setSelectedProduct(product);
+    setDialogOpen(true);
   };
 
-  const handleAddToCart = async (productId: number) => {
-    if (!customerId) {
-      navigate('/login');
-    } else {
-      try {
-        await addCartItem({ customerId, eventItemId: productId, quantity: 1 }).unwrap();
-        refetch(); // Reload the cart items list
-      } catch (error) {
-        console.error('Failed to add item to cart:', error);
-      }
-    }
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setSelectedProduct(null);
   };
 
   const drawer = (
@@ -134,12 +115,13 @@ const HomePage: React.FC = () => {
                   product.eventName.toLowerCase().includes(searchTerm.toLowerCase())
                 )
                 .map((product) => (
-                  <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product.id)} />
+                  <ProductCard key={product.id} product={product} onClick={() => handleProductClick(product)} />
                 ))}
             </Grid>
           )}
         </Container>
       </Box>
+      <ProductDetailsDialog open={dialogOpen} onClose={handleDialogClose} product={selectedProduct} />
     </Box>
   );
 };

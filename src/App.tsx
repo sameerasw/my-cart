@@ -16,12 +16,8 @@ const App: React.FC = () => {
           <Route path="/" element={<HomePage />} /> 
           <Route path="/cart" element={<CartPage />} /> 
           <Route path="*" element={<div>Not Found</div>} />
-          <Route path="/login" element={<Login onLoginSuccess={function (token: string, userId: number, name: string, email: string, userType: string): void {
-            throw new Error('Function not implemented.');
-          } } />} />
-          <Route path="/register" element={<Register onRegisterSuccess={function (): void {
-            throw new Error('Function not implemented.');
-          } } />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes> 
       </BrowserRouter>
     </Box>

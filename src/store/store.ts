@@ -3,6 +3,7 @@ import rootReducer from './rootReducer';
 import { itemApi } from '../api/itemApiSlice';
 import { sessionApi } from '../api/sessionApiSlice';
 import { cartApi } from '../api/cartApiSlice';
+import { ratingApi } from '../api/ratingApiSlice';
 
 const store = configureStore({
   reducer: rootReducer,
@@ -10,7 +11,8 @@ const store = configureStore({
     getDefaultMiddleware().concat(
       itemApi.middleware, 
       sessionApi.middleware,
-      cartApi.middleware
+      cartApi.middleware,
+      ratingApi.middleware
     ),
 });
 

@@ -4,6 +4,7 @@ import authReducer from './authSlice';
 import { itemApi } from '../api/itemApiSlice';
 import { sessionApi } from '../api/sessionApiSlice';
 import { cartApi } from '../api/cartApiSlice';
+import { ratingApi } from '../api/ratingApiSlice';
 
 const rootReducer = combineReducers({
   cart: cartReducer,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   [itemApi.reducerPath]: itemApi.reducer,
   [sessionApi.reducerPath]: sessionApi.reducer,
   [cartApi.reducerPath]: cartApi.reducer,
+  [ratingApi.reducerPath]: ratingApi.reducer,
 });
 
 export default rootReducer;
