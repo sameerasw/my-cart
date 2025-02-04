@@ -18,7 +18,8 @@ const NavBar: React.FC<NavBarProps> = ({ searchTerm, onSearchChange, backEnabled
   const theme = useTheme();
   const navigate = useNavigate();
   const { userId: customerId, name } = useSelector((state: { auth: UserState }) => state.auth);
-  const { data: cartItems = [] } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
+  const { data: cartData } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
+  const cartItems = cartData?.cartItems || [];
 
   const toCart = () => {
     if (!customerId) {

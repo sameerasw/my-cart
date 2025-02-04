@@ -9,15 +9,9 @@ interface CartViewProps {
 
 const CartView: React.FC<CartViewProps> = ({ cartItem, handleRemove }) => {
   return (
-    <Card>
-      <CardMedia
-        component="img"
-        height="140"
-        image={cartItem.image}
-        alt={cartItem.eventName}
-      />
+    <Card sx={{ display: 'flex', alignItems: 'center', width: '100%', height: '100%' }}>
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+        <Typography gutterBottom variant="h5" component="div" sx={{flexGrow: 1}}>
           {cartItem.eventName}
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -32,6 +26,13 @@ const CartView: React.FC<CartViewProps> = ({ cartItem, handleRemove }) => {
           </Button>
         </Box>
       </CardContent>
+      <CardMedia
+        component="img"
+        // height="200"
+        height="100%"
+        image={cartItem.image}
+        alt={cartItem.eventName}
+      />
     </Card>
   );
 };

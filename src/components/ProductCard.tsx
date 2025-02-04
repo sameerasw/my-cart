@@ -16,7 +16,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         width: "25em",
         borderRadius: 2,
         transition: "all 0.2s ease-in-out",
-        // outline: "gray solid 1px",
         '&:hover': {
           boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
           scale: 1.05,
@@ -36,9 +35,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           <Typography variant="body2"> 
             Price: ${ticketPrice} 
           </Typography> 
-          <Typography variant="body2"> 
+          {/* <Typography variant="body2"> 
             Available Tickets: {availableTickets}
-          </Typography> 
+          </Typography>  */}
           <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
             <Rating value={avgRating} readOnly precision={0.5} />
             <Typography variant="body2" sx={{ ml: 1 }}>
