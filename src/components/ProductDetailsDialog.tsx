@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Typography, CardMedia, Box, Rating, Slide } from '@mui/material';
-import { EventItem } from '../types/Item';
+import { Product } from '../types/Product';
 import { useAddRatingMutation, useGetRatingByCustomerAndEventQuery } from '../api/ratingApiSlice';
 import { useSelector } from 'react-redux';
 import { UserState } from '../store/AuthState';
@@ -10,7 +10,7 @@ import { TransitionProps } from '@mui/material/transitions';
 interface ProductDetailsDialogProps {
     open: boolean;
     onClose: () => void;
-    product: EventItem | null;
+    product: Product | null;
 }
 
 const Transition = React.forwardRef(function Transition(
@@ -59,7 +59,7 @@ const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({ open, onClo
         setRating(newValue);
         if (newValue !== null) {
             try {
-                await addRating({ customerId, eventItemId: product.id, rating: newValue }).unwrap();
+                await addRating({ customerId, productId: product.id, rating: newValue }).unwrap();
                 console.log('Rating submitted successfully');
                 refetchRating();
             } catch (error) {
@@ -75,7 +75,7 @@ const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({ open, onClo
         }
 
         try {
-            await addCartItem({ customerId, eventItemId: product.id, quantity: 1 }).unwrap();
+            await addCartItem({ customerId, productId: product.id, quantity: 1 }).unwrap();
             setAddedToCart(true);
             refetch(); // Reload the cart items list
             console.log('Item added to cart successfully');
@@ -91,7 +91,7 @@ const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({ open, onClo
             TransitionComponent={Transition}
             keepMounted
         >
-            <DialogTitle>{product.eventName}</DialogTitle>
+            <DialogTitle>{product.productName}</DialogTitle>
             <DialogContent>
                 {addedToCart ? (
                     <DialogContentText>
@@ -103,13 +103,13 @@ const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({ open, onClo
                             component="img"
                             height="100%"
                             image={product.image}
-                            alt={product.eventName}
+                            alt={product.productName}
                             sx={{ objectFit: "cover", marginBottom: 2 }}
                         />
                         <Typography variant="h5" color="textSecondary">
                             {product.details}
                         </Typography>
-                        <Typography variant="body1">Price: ${product.ticketPrice}</Typography>
+                        <Typography variant="body1">Price: ${product.productPrice}</Typography>
                         {/* <Typography variant="body2" color="textSecondary">
                             Available Tickets: {product.availableTickets}
                         </Typography> */}

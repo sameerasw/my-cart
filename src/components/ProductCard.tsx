@@ -1,54 +1,51 @@
-import { Grid, Card, CardContent, Typography, CardMedia, Box, Rating } from '@mui/material';
-import { EventItem } from '../types/Item';
+import { Card, CardContent, Typography, CardMedia, Box, Rating } from '@mui/material';
+import { Product } from '../types/Product';
 
 interface ProductCardProps {
-  product: EventItem; 
+  product: Product;
   onClick: () => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
-  const { eventName, image, ticketPrice, availableTickets, avgRating } = product; 
+  const { productName, image, productPrice, avgRating } = product;
 
   return (
-    <Grid item xs={12} sm={6} md={4} lg={3}> 
       <Card onClick={onClick} sx={{
-        cursor: "pointer", 
+        cursor: "pointer",
         width: "25em",
         borderRadius: 2,
         transition: "all 0.2s ease-in-out",
-        // outline: "gray solid 1px",
         '&:hover': {
           boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
           scale: 1.05,
         }
-      }}> 
-        <CardMedia 
-          component="img" 
-          height="250em" 
+      }}>
+        <CardMedia
+          component="img"
+          height="250em"
           image={image}
-          alt={eventName}
+          alt={productName}
           sx={{ objectFit: "cover" }}
         />
-        <CardContent> 
-          <Typography gutterBottom variant="h5" component="div"> 
-            {eventName} 
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="div">
+            {productName}
           </Typography>
-          <Typography variant="body2"> 
-            Price: ${ticketPrice} 
-          </Typography> 
-          <Typography variant="body2"> 
+          <Typography variant="body2">
+            Price: ${productPrice}
+          </Typography>
+          {/* <Typography variant="body2"> 
             Available Tickets: {availableTickets}
-          </Typography> 
+          </Typography>  */}
           <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
             <Rating value={avgRating} readOnly precision={0.5} />
             <Typography variant="body2" sx={{ ml: 1 }}>
               {avgRating.toFixed(1)}
             </Typography>
           </Box>
-        </CardContent> 
-      </Card> 
-    </Grid> 
+        </CardContent>
+      </Card>
   );
-}; 
+};
 
 export default ProductCard;

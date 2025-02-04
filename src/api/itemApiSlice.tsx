@@ -1,20 +1,20 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { EventItem, TicketDTO, TicketPoolDTO } from '../types/Item';
+import { Product, TicketDTO, TicketPoolDTO } from '../types/Product';
 
 export const itemApi = createApi({
   reducerPath: 'itemApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:1245' }),
   endpoints: (builder) => ({
-    getAllEvents: builder.query<EventItem[], void>({
+    getAllEvents: builder.query<Product[], void>({
       query: () => '/events/list',
     }),
-    getEventById: builder.query<EventItem, number>({
+    getEventById: builder.query<Product, number>({
       query: (eventId) => `/events/${eventId}`,
     }),
-    getVendorEvents: builder.query<EventItem[], number>({
+    getVendorEvents: builder.query<Product[], number>({
       query: (vendorId) => `/events/${vendorId}/list`,
     }),
-    createEvent: builder.mutation<EventItem, Partial<EventItem>>({
+    createEvent: builder.mutation<Product, Partial<Product>>({
       query: (newEvent) => ({
         url: '/events',
         method: 'POST',
