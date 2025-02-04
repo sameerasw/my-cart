@@ -91,7 +91,7 @@ const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({ open, onClo
             TransitionComponent={Transition}
             keepMounted
         >
-            <DialogTitle>{product.eventName}</DialogTitle>
+            <DialogTitle>{product.productName}</DialogTitle>
             <DialogContent>
                 {addedToCart ? (
                     <DialogContentText>
@@ -103,13 +103,13 @@ const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({ open, onClo
                             component="img"
                             height="100%"
                             image={product.image}
-                            alt={product.eventName}
+                            alt={product.productName}
                             sx={{ objectFit: "cover", marginBottom: 2 }}
                         />
                         <Typography variant="h5" color="textSecondary">
                             {product.details}
                         </Typography>
-                        <Typography variant="body1">Price: ${product.ticketPrice}</Typography>
+                        <Typography variant="body1">Price: ${product.productPrice}</Typography>
                         {/* <Typography variant="body2" color="textSecondary">
                             Available Tickets: {product.availableTickets}
                         </Typography> */}

@@ -124,7 +124,7 @@ const HomePage: React.FC = () => {
                 <Grid container spacing={3}>
                   {products
                     .filter((product) =>
-                      product.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+                      product.productName.toLowerCase().includes(searchTerm.toLowerCase())
                     )
                     .map((product) => (
                       <ProductCard key={product.id} product={product} onClick={() => handleProductClick(product)} />

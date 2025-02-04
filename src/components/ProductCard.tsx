@@ -7,7 +7,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
-  const { eventName, image, ticketPrice, availableTickets, avgRating } = product; 
+  const { productName, image, productPrice, availableProducts, avgRating } = product; 
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}> 
@@ -25,15 +25,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           component="img" 
           height="250em" 
           image={image}
-          alt={eventName}
+          alt={productName}
           sx={{ objectFit: "cover" }}
         />
         <CardContent> 
           <Typography gutterBottom variant="h5" component="div"> 
-            {eventName} 
+            {productName} 
           </Typography>
           <Typography variant="body2"> 
-            Price: ${ticketPrice} 
+            Price: ${productPrice} 
           </Typography> 
           {/* <Typography variant="body2"> 
             Available Tickets: {availableTickets}

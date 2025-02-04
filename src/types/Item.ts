@@ -1,30 +1,29 @@
 export interface EventItem {
     id: number;
-    eventName: string;
-    eventLocation: string;
-    eventDate: string;
-    eventTime: string;
-    eventId: number;
-    ticketPrice: number;
+    productName	: string;
+    productLocation: string;
+    productDate: string;
+    productTime: string;
+    productId: number;
+    productPrice: number;
     details: string;
     image: string;
     vendorName: string;
     vendorId: number;
-    availableTickets: number;
+    availableProducts: number;
     avgRating: number;
   }
   
   export interface TicketDTO {
-    eventName: string;
-    ticketId: string;
+    productName	: string;
     imageUrl: string;
     dateTime: string;
-    eventId: string;
+    productId: string;
   }
   
   export interface TicketPoolDTO {
     id: number;
     maxPoolSize: number;
-    availableTickets: number;
-    eventItemId: number;
+    availableProducts: number;
+    productId: number;
   }
