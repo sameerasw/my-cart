@@ -6,10 +6,6 @@ import {
   Typography,
   Button,
   Grid,
-  IconButton,
-  AppBar,
-  Toolbar,
-  useTheme,
   Box,
   Dialog,
   DialogActions,
@@ -18,18 +14,16 @@ import {
   DialogTitle,
   CircularProgress
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
 import { useGetCartItemsByCustomerIdQuery, useRemoveCartItemMutation, useClearCartMutation } from '../api/cartApiSlice';
 import { UserState } from '../store/AuthState';
 import NavBar from '../components/NavBar';
 
 const CartPage: React.FC = () => {
-  const theme = useTheme();
   const navigate = useNavigate();
   const { userId: customerId } = useSelector((state: { auth: UserState }) => state.auth);
 
-  const { data: cartData, isLoading, error, refetch } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
+  const { data: cartData, isLoading, refetch } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
   const cartItems = cartData?.cartItems || [];
   const totalPrice = cartData?.totalPrice || 0;
   const [removeCartItem] = useRemoveCartItemMutation();

@@ -12,7 +12,7 @@ const CartView: React.FC<CartViewProps> = ({ cartItem, handleRemove }) => {
 
   const handleRemoveClick = async () => {
     setLoading(true);
-    await handleRemove(cartItem.id);
+    handleRemove(cartItem.id);
     setLoading(false);
   };
 

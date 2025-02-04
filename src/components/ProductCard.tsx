@@ -1,4 +1,4 @@
-import { Grid, Card, CardContent, Typography, CardMedia, Box, Rating } from '@mui/material';
+import { Card, CardContent, Typography, CardMedia, Box, Rating } from '@mui/material';
 import { Product } from '../types/Product';
 
 interface ProductCardProps {
@@ -7,10 +7,9 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
-  const { productName, image, productPrice, availableProducts, avgRating } = product;
+  const { productName, image, productPrice, avgRating } = product;
 
   return (
-    <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card onClick={onClick} sx={{
         cursor: "pointer",
         width: "25em",
@@ -46,7 +45,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           </Box>
         </CardContent>
       </Card>
-    </Grid>
   );
 };
 

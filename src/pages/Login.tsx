@@ -10,12 +10,12 @@ import NavBar from '../components/NavBar';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState<UserType>('CUSTOMER');
+  const [userType] = useState<UserType>('CUSTOMER');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [login, { isLoading }] = useLoginMutation();
+  const [login] = useLoginMutation();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
