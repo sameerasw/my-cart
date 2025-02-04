@@ -13,13 +13,13 @@ export const ratingApi = createApi({
             }),
         }),
 
-        getRatingByCustomerAndEvent: builder.query<number, { customerId: number, eventItemId: number }>({
-            query: ({ customerId, eventItemId }) => `/ratings/customer/${customerId}/event/${eventItemId}`,
+        getRatingByCustomerAndProduct: builder.query<number, { customerId: number, productId: number }>({
+            query: ({ customerId, productId }) => `/ratings/customer/${customerId}/product/${productId}`,
         }),
     }),
 });
 
 export const {
     useAddRatingMutation,
-    useGetRatingByCustomerAndEventQuery,
+    useGetRatingByCustomerAndProductQuery,
 } = ratingApi;

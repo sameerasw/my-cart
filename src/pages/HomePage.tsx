@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useSelector } from 'react-redux';
-import { useGetAllEventsQuery } from '../api/itemApiSlice';
+import { useGetAllProductsQuery } from '../api/itemApiSlice';
 import ProductCard from '../components/ProductCard';
 import { UserState } from '../store/AuthState';
 import { useGetCartItemsByCustomerIdQuery } from '../api/cartApiSlice';
@@ -34,7 +34,7 @@ const HomePage: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const [products, setProducts] = useState<Product[]>([]);
-  const { data, isLoading, error, refetch } = useGetAllEventsQuery();
+  const { data, isLoading, error, refetch } = useGetAllProductsQuery();
 
   useEffect(() => {
     if (data) {

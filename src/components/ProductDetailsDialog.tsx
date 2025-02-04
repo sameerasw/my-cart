@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Typography, CardMedia, Box, Rating, Slide } from '@mui/material';
 import { Product } from '../types/Product';
-import { useAddRatingMutation, useGetRatingByCustomerAndEventQuery } from '../api/ratingApiSlice';
+import { useAddRatingMutation, useGetRatingByCustomerAndProductQuery } from '../api/ratingApiSlice';
 import { useSelector } from 'react-redux';
 import { UserState } from '../store/AuthState';
 import { useAddCartItemMutation, useGetCartItemsByCustomerIdQuery } from '../api/cartApiSlice';
@@ -30,8 +30,8 @@ const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({ open, onClo
     const { refetch } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
     const [addedToCart, setAddedToCart] = useState(false);
 
-    const { data: existingRating, refetch: refetchRating } = useGetRatingByCustomerAndEventQuery(
-        { customerId: customerId as number, eventItemId: product?.id as number },
+    const { data: existingRating, refetch: refetchRating } = useGetRatingByCustomerAndProductQuery(
+        { customerId: customerId as number, productId: product?.id as number },
         { skip: !customerId || !product }
     );
 
