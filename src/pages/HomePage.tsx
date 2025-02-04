@@ -13,6 +13,7 @@ import {
   CssBaseline,
   useMediaQuery,
   Box,
+  CircularProgress,
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useSelector } from 'react-redux';
@@ -116,7 +117,11 @@ const HomePage: React.FC = () => {
           <Typography variant="h4" gutterBottom mb={2}>Our Products</Typography>
           {(() => {
             if (isLoading) {
-              return <Typography>Loading...</Typography>;
+              return (
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
+                  <CircularProgress />
+                </Box>
+              );
             } else if (error) {
               return <Typography>Error loading products</Typography>;
             } else {
