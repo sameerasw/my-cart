@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Typography, CardMedia, Box, Rating, Slide } from '@mui/material';
-import { EventItem } from '../types/Item';
+import { Product } from '../types/Product';
 import { useAddRatingMutation, useGetRatingByCustomerAndEventQuery } from '../api/ratingApiSlice';
 import { useSelector } from 'react-redux';
 import { UserState } from '../store/AuthState';
@@ -10,7 +10,7 @@ import { TransitionProps } from '@mui/material/transitions';
 interface ProductDetailsDialogProps {
     open: boolean;
     onClose: () => void;
-    product: EventItem | null;
+    product: Product | null;
 }
 
 const Transition = React.forwardRef(function Transition(
@@ -59,7 +59,7 @@ const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({ open, onClo
         setRating(newValue);
         if (newValue !== null) {
             try {
-                await addRating({ customerId, eventItemId: product.id, rating: newValue }).unwrap();
+                await addRating({ customerId, productId: product.id, rating: newValue }).unwrap();
                 console.log('Rating submitted successfully');
                 refetchRating();
             } catch (error) {

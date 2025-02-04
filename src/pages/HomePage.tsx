@@ -23,17 +23,17 @@ import { UserState } from '../store/AuthState';
 import { useGetCartItemsByCustomerIdQuery } from '../api/cartApiSlice';
 import NavBar from '../components/NavBar';
 import ProductDetailsDialog from '../components/ProductDetailsDialog';
-import { EventItem } from '../types/Item';
+import { Product } from '../types/Product';
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<EventItem | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const [products, setProducts] = useState<EventItem[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const { data, isLoading, error, refetch } = useGetAllEventsQuery();
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const HomePage: React.FC = () => {
     }
   }, [customerId, dialogOpen, refetchCartItems]);
 
-  const handleProductClick = (product: EventItem) => {
+  const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
     setDialogOpen(true);
   };

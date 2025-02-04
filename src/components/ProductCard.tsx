@@ -1,18 +1,18 @@
 import { Grid, Card, CardContent, Typography, CardMedia, Box, Rating } from '@mui/material';
-import { EventItem } from '../types/Item';
+import { Product } from '../types/Product';
 
 interface ProductCardProps {
-  product: EventItem; 
+  product: Product;
   onClick: () => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
-  const { productName, image, productPrice, availableProducts, avgRating } = product; 
+  const { productName, image, productPrice, availableProducts, avgRating } = product;
 
   return (
-    <Grid item xs={12} sm={6} md={4} lg={3}> 
+    <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card onClick={onClick} sx={{
-        cursor: "pointer", 
+        cursor: "pointer",
         width: "25em",
         borderRadius: 2,
         transition: "all 0.2s ease-in-out",
@@ -20,21 +20,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
           scale: 1.05,
         }
-      }}> 
-        <CardMedia 
-          component="img" 
-          height="250em" 
+      }}>
+        <CardMedia
+          component="img"
+          height="250em"
           image={image}
           alt={productName}
           sx={{ objectFit: "cover" }}
         />
-        <CardContent> 
-          <Typography gutterBottom variant="h5" component="div"> 
-            {productName} 
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="div">
+            {productName}
           </Typography>
-          <Typography variant="body2"> 
-            Price: ${productPrice} 
-          </Typography> 
+          <Typography variant="body2">
+            Price: ${productPrice}
+          </Typography>
           {/* <Typography variant="body2"> 
             Available Tickets: {availableTickets}
           </Typography>  */}
@@ -44,10 +44,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
               {avgRating.toFixed(1)}
             </Typography>
           </Box>
-        </CardContent> 
-      </Card> 
-    </Grid> 
+        </CardContent>
+      </Card>
+    </Grid>
   );
-}; 
+};
 
 export default ProductCard;
