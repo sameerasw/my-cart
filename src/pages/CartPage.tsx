@@ -15,7 +15,8 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  CircularProgress
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
@@ -34,32 +35,42 @@ const CartPage: React.FC = () => {
   const [removeCartItem] = useRemoveCartItemMutation();
   const [clearCart] = useClearCartMutation();
   const [openDialog, setOpenDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleRemoveFromCart = async (cartItemId: number) => {
+    setLoading(true);
     try {
       await removeCartItem(cartItemId).unwrap();
       refetch(); // Reload the cart items list
     } catch (error) {
       console.error('Failed to remove item from cart:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleClearCart = async () => {
+    setLoading(true);
     try {
       await clearCart(customerId as number).unwrap();
       refetch(); // Reload the cart items list
     } catch (error) {
       console.error('Failed to clear cart:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCheckout = async () => {
+    setLoading(true);
     try {
       await clearCart(customerId as number).unwrap();
       setOpenDialog(true);
       refetch(); // Reload the cart items list
     } catch (error) {
       console.error('Failed to complete purchase:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,24 +93,31 @@ const CartPage: React.FC = () => {
   return (
     <Container maxWidth="lg" sx={{ padding: 2, mt: 2 }}>
       <NavBar backEnabled={true} />
-
-      {cartItems.length === 0 ? (
-        <Typography variant="body1" align="center" mt={2} sx={{ mt: 6 }}>
-          Your cart is empty.
-        </Typography>
-      ) : (
-        <Box sx={{ mt: 6 }}>
-          <Typography variant="h6" mb={2}>
-            You have {cartItems.length} item(s) in your cart.
-          </Typography>
-          <Grid container spacing={3} mb={12}>
-            {cartItems.map((item) => (
-              <Grid item xs={12} sm={6} md={4} key={item.id}>
-                <CartView cartItem={item} handleRemove={handleRemoveFromCart} />
-              </Grid>
-            ))}
-          </Grid>
+      {isLoading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
+          <CircularProgress />
         </Box>
+      ) : (
+        <>
+          {cartItems.length === 0 ? (
+            <Typography variant="body1" align="center" mt={2} sx={{ mt: 6 }}>
+              Your cart is empty.
+            </Typography>
+          ) : (
+            <Box sx={{ mt: 6 }}>
+              <Typography variant="h6" mb={2}>
+                You have {cartItems.length} item(s) in your cart.
+              </Typography>
+              <Grid container spacing={3} mb={12}>
+                {cartItems.map((item) => (
+                  <Grid item xs={12} sm={6} md={4} key={item.id}>
+                    <CartView cartItem={item} handleRemove={handleRemoveFromCart} />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          )}
+        </>
       )}
 
       <Box sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, display: 'flex', justifyContent: 'center', p: 2, bgcolor: 'white', boxShadow: 2 }}>
@@ -107,8 +125,9 @@ const CartPage: React.FC = () => {
           variant="contained"
           color="error"
           onClick={handleClearCart}
+          disabled={loading}
         >
-          Remove All Items
+          {loading ? <CircularProgress size={24} /> : 'Remove All Items'}
         </Button>
         <Box sx={{ mx: 2, textAlign: 'right', alignContent: 'center' }}>
           <Button
@@ -116,8 +135,9 @@ const CartPage: React.FC = () => {
             color="success"
             onClick={handleCheckout}
             sx={{ ml: 0.5, p: 0.5 }}
+            disabled={loading}
           >
-            Proceed to Checkout
+            {loading ? <CircularProgress size={24} /> : 'Proceed to Checkout'}
             <Typography variant="body1" sx={{ display: 'block', backgroundColor: 'white', color: 'green', p: 1, borderRadius: 1, ml: 2 }}>
               Total : ${totalPrice}
             </Typography>
@@ -127,8 +147,9 @@ const CartPage: React.FC = () => {
           variant="contained"
           onClick={handleBackToHome}
           sx={{ ml: 0.5 }}
+          disabled={loading}
         >
-          Continue Shopping
+          {loading ? <CircularProgress size={24} /> : 'Continue Shopping'}
         </Button>
       </Box>
 

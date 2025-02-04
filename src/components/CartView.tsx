@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, CardContent, CardMedia, Typography, Button, Box } from '@mui/material';
+import React, { useState } from 'react';
+import { Card, CardContent, CardMedia, Typography, Button, CircularProgress, Box } from '@mui/material';
 import { CartItem } from '../types/Cart';
 
 interface CartViewProps {
@@ -8,6 +8,14 @@ interface CartViewProps {
 }
 
 const CartView: React.FC<CartViewProps> = ({ cartItem, handleRemove }) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleRemoveClick = async () => {
+    setLoading(true);
+    await handleRemove(cartItem.id);
+    setLoading(false);
+  };
+
   return (
     <Card sx={{ display: 'flex', alignItems: 'center', width: '100%', height: '100%' }}>
       <CardContent>
@@ -17,18 +25,14 @@ const CartView: React.FC<CartViewProps> = ({ cartItem, handleRemove }) => {
         <Typography variant="body2" color="text.secondary">
           Price: ${cartItem.ticketPrice}
         </Typography>
-        {/* <Typography variant="body2" color="text.secondary">
-          Quantity: {cartItem.quantity}
-        </Typography> */}
         <Box mt={2}>
-          <Button variant="contained" color="secondary" onClick={() => handleRemove(cartItem.id)}>
-            Remove
+          <Button variant="contained" color="secondary" onClick={handleRemoveClick} disabled={loading}>
+            {loading ? <CircularProgress size={24} /> : 'Remove'}
           </Button>
         </Box>
       </CardContent>
       <CardMedia
         component="img"
-        // height="200"
         height="100%"
         image={cartItem.image}
         alt={cartItem.eventName}

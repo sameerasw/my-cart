@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Typography, Box, Alert, Paper, FormControlLabel, Switch, CircularProgress, AppBar, useTheme, Badge, IconButton, Toolbar } from '@mui/material';
+import { TextField, Button, Typography, Box, Alert, Paper, CircularProgress } from '@mui/material';
 import { useLoginMutation } from '../api/sessionApiSlice';
 import { useDispatch } from 'react-redux';
-import { setAuth } from '../store/authSlice';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { setAuth } from '../store/authSlice'
 import { UserType } from '../types/User';
 import NavBar from '../components/NavBar';
 
 const Login = () => {
-  const theme = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState<UserType>('CUSTOMER');
