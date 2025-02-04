@@ -13,6 +13,7 @@ import {
   CssBaseline,
   useMediaQuery,
   Box,
+  CircularProgress,
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useSelector } from 'react-redux';
@@ -22,17 +23,17 @@ import { UserState } from '../store/AuthState';
 import { useGetCartItemsByCustomerIdQuery } from '../api/cartApiSlice';
 import NavBar from '../components/NavBar';
 import ProductDetailsDialog from '../components/ProductDetailsDialog';
-import { EventItem } from '../types/Item';
+import { Product } from '../types/Product';
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<EventItem | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const [products, setProducts] = useState<EventItem[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const { data, isLoading, error, refetch } = useGetAllEventsQuery();
 
   useEffect(() => {
@@ -62,7 +63,7 @@ const HomePage: React.FC = () => {
     }
   }, [customerId, dialogOpen, refetchCartItems]);
 
-  const handleProductClick = (product: EventItem) => {
+  const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
     setDialogOpen(true);
   };
@@ -116,7 +117,11 @@ const HomePage: React.FC = () => {
           <Typography variant="h4" gutterBottom mb={2}>Our Products</Typography>
           {(() => {
             if (isLoading) {
-              return <Typography>Loading...</Typography>;
+              return (
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
+                  <CircularProgress />
+                </Box>
+              );
             } else if (error) {
               return <Typography>Error loading products</Typography>;
             } else {
@@ -124,7 +129,7 @@ const HomePage: React.FC = () => {
                 <Grid container spacing={3}>
                   {products
                     .filter((product) =>
-                      product.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+                      product.productName.toLowerCase().includes(searchTerm.toLowerCase())
                     )
                     .map((product) => (
                       <ProductCard key={product.id} product={product} onClick={() => handleProductClick(product)} />

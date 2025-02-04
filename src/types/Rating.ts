@@ -1,6 +1,6 @@
 export interface Rating {
     id: number;
     rating: number;
-    eventItemId: number;
+    productId: number;
     customerId: number;
   }

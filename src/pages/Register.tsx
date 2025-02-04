@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Typography, Box, Alert, Paper, FormControlLabel, Switch, CircularProgress, AppBar, Toolbar, useTheme, IconButton } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { TextField, Button, Typography, Box, Alert, Paper, FormControlLabel, Switch, CircularProgress } from '@mui/material';
+
 import { useRegisterMutation } from '../api/sessionApiSlice';
 import { UserType } from '../types/User';
 import NavBar from '../components/NavBar';
 
 const Register = () => {
-  const theme = useTheme();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +14,7 @@ const Register = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const [register, { isLoading }] = useRegisterMutation();
+  const [register] = useRegisterMutation();
 
   const onRegisterSuccess = () => {
     alert('Registration successful. Please login to continue.');
