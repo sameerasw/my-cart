@@ -20,10 +20,10 @@ const CartView: React.FC<CartViewProps> = ({ cartItem, handleRemove }) => {
     <Card sx={{ display: 'flex', alignItems: 'center', width: '100%', height: '100%' }}>
       <CardContent>
         <Typography gutterBottom variant="h5" component="div" sx={{flexGrow: 1}}>
-          {cartItem.eventName}
+          {cartItem.productName}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Price: ${cartItem.ticketPrice}
+          Price: ${cartItem.productPrice}
         </Typography>
         <Box mt={2}>
           <Button variant="contained" color="secondary" onClick={handleRemoveClick} disabled={loading}>
@@ -35,7 +35,7 @@ const CartView: React.FC<CartViewProps> = ({ cartItem, handleRemove }) => {
         component="img"
         height="100%"
         image={cartItem.image}
-        alt={cartItem.eventName}
+        alt={cartItem.productName}
       />
     </Card>
   );

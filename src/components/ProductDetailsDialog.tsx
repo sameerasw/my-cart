@@ -75,7 +75,7 @@ const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({ open, onClo
         }
 
         try {
-            await addCartItem({ customerId, eventItemId: product.id, quantity: 1 }).unwrap();
+            await addCartItem({ customerId, productId: product.id, quantity: 1 }).unwrap();
             setAddedToCart(true);
             refetch(); // Reload the cart items list
             console.log('Item added to cart successfully');
