@@ -86,7 +86,11 @@ const baseQueryWithInterceptor: BaseQueryFn<
     logAPIWarning("Access forbidden. Insufficient permissions.");
   }
 
-  if (result.error && result.error.status >= 500) {
+  if (
+    result.error &&
+    typeof result.error.status === "number" &&
+    result.error.status >= 500
+  ) {
     logAPIError(`Server Error: ${method} ${url} (${duration}ms)`, result.error);
     logAPIError("Server error occurred. Please try again later.");
   }
@@ -94,7 +98,7 @@ const baseQueryWithInterceptor: BaseQueryFn<
   // Log other errors
   if (
     result.error &&
-    result.error.status &&
+    typeof result.error.status === "number" &&
     result.error.status < 500 &&
     result.error.status !== 401 &&
     result.error.status !== 403
