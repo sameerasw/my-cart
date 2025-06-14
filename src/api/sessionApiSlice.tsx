@@ -4,11 +4,19 @@ import { UserType } from '../types/User';
 
 const API_URL = config.API_BASE_URL;
 
+interface LoginResponse {
+  token: string;
+  userId: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
 export const sessionApi = createApi({
   reducerPath: 'sessionApi',
   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
   endpoints: (builder) => ({
-    login: builder.mutation<{ token: string, userId: number, name: string, email: string, userType: UserType }, { email: string; password: string; userType: UserType }>({
+    login: builder.mutation<LoginResponse, { email: string; password: string; userType: UserType }>({
       query: ({ email, password, userType }) => ({
         url: '/api/auth/login',
         method: 'POST',

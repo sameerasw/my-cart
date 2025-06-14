@@ -19,18 +19,23 @@ const Login = () => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setLoading(true);
+        setError('');
+
         try {
             const data = await login({ email, password, userType }).unwrap();
-            console.log(data);
+            console.log('Login successful:', data);
+
+            // Dispatch to Redux store (which will also save to localStorage)
             dispatch(setAuth(data));
-            console.log("successful saving data");
+
+            // Navigate based on user type
             if (data.userType === 'VENDOR') {
                 navigate('/vendor');
             } else {
                 navigate('/');
             }
-            console.log("successful navigate");
-        } catch (err) {
+        } catch (err: any) {
+            console.error('Login failed:', err);
             setError('Invalid email or password');
         } finally {
             setLoading(false);

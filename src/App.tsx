@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Box, CircularProgress } from '@mui/material';
 import RootLayout from './layouts/RootLayout';
 import AuthLayout from './layouts/AuthLayout';
@@ -8,6 +9,7 @@ import Home from './components/shop/Home';
 import Cart from './components/shop/Cart';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
+import { initializeAuth } from './store/authSlice';
 
 const router = createBrowserRouter([
   {
@@ -69,11 +71,15 @@ const router = createBrowserRouter([
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    // Initialize auth state from localStorage
+    dispatch(initializeAuth());
+
     const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [dispatch]);
 
   if (loading) {
     return (
