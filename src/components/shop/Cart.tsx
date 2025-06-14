@@ -5,15 +5,20 @@ import {
     Container,
     Typography,
     Button,
-    Grid,
+    Grid2 as Grid,
     Box,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    CircularProgress
+    CircularProgress,
+    Paper,
+    Divider,
+    alpha
 } from '@mui/material';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import CelebrationIcon from '@mui/icons-material/Celebration';
 import { useNavigate } from 'react-router-dom';
 import { useGetCartItemsByCustomerIdQuery, useRemoveCartItemMutation, useClearCartMutation } from '../../api/cartApiSlice';
 import { UserState } from '../../store/AuthState';
@@ -69,6 +74,7 @@ const Cart: React.FC = () => {
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
+        navigate('/');
     };
 
     useEffect(() => {
@@ -84,81 +90,194 @@ const Cart: React.FC = () => {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ padding: 2 }}>
-            {isLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
-                    <CircularProgress />
-                </Box>
-            ) : (
-                <>
-                    {cartItems.length === 0 ? (
-                        <Typography variant="body1" align="center" sx={{ mt: 6 }}>
-                            Your cart is empty.
+        <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', pb: { xs: 16, md: 12 } }}>
+            <Container maxWidth="xl" sx={{ py: 4 }}>
+                <Box sx={{ mb: 4, textAlign: 'center' }}>
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            mb: 2,
+                            fontWeight: 700,
+                            background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)',
+                            backgroundClip: 'text',
+                            WebkitBackgroundClip: 'text',
+                            color: 'transparent',
+                        }}
+                    >
+                        Shopping Cart
+                    </Typography>
+                    {!isLoading && cartItems.length > 0 && (
+                        <Typography variant="body1" color="text.secondary">
+                            {cartItems.length} item{cartItems.length !== 1 ? 's' : ''} in your cart
                         </Typography>
-                    ) : (
-                        <Box sx={{ mt: 2 }}>
-                            <Typography variant="h6" mb={2}>
-                                You have {cartItems.length} item(s) in your cart.
-                            </Typography>
-                            <Grid container spacing={3} mb={12}>
-                                {cartItems.map((item) => (
-                                    <Grid item xs={12} sm={6} md={4} key={item.id}>
-                                        <CartView cartItem={item} handleRemove={handleRemoveFromCart} />
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </Box>
                     )}
-                </>
+                </Box>
+
+                {isLoading ? (
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minHeight: '400px',
+                        gap: 3
+                    }}>
+                        <CircularProgress size={48} thickness={4} />
+                        <Typography variant="h6" color="text.secondary">
+                            Loading your cart...
+                        </Typography>
+                    </Box>
+                ) : cartItems.length === 0 ? (
+                    <Paper sx={{
+                        p: 8,
+                        textAlign: 'center',
+                        bgcolor: alpha('#64748b', 0.05),
+                        border: '1px solid',
+                        borderColor: 'grey.200',
+                    }}>
+                        <ShoppingCartIcon sx={{ fontSize: 64, color: 'grey.400', mb: 2 }} />
+                        <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
+                            Your cart is empty
+                        </Typography>
+                        <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+                            Discover amazing products and add them to your cart
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            size="large"
+                            onClick={handleBackToHome}
+                            sx={{
+                                px: 4,
+                                py: 1.5,
+                                borderRadius: 2,
+                            }}
+                        >
+                            Start Shopping
+                        </Button>
+                    </Paper>
+                ) : (
+                    <Grid container spacing={4}>
+                        {cartItems.map((item) => (
+                            <Grid key={item.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+                                <CartView cartItem={item} handleRemove={handleRemoveFromCart} />
+                            </Grid>
+                        ))}
+                    </Grid>
+                )}
+            </Container>
+
+            {/* Fixed bottom bar for cart actions */}
+            {cartItems.length > 0 && (
+                <Paper sx={{
+                    position: 'fixed',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    p: { xs: 2, md: 3 },
+                    boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.1)',
+                    borderTop: '1px solid',
+                    borderColor: 'grey.200',
+                    zIndex: 1000,
+                }}>
+                    <Container maxWidth="xl">
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: { xs: 'column', md: 'row' },
+                            alignItems: { xs: 'stretch', md: 'center' },
+                            justifyContent: 'space-between',
+                            gap: 2
+                        }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: { xs: 'center', md: 'flex-start' } }}>
+                                <Typography variant="body2" color="text.secondary">
+                                    Total Amount
+                                </Typography>
+                                <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.main' }}>
+                                    ${totalPrice.toFixed(2)}
+                                </Typography>
+                            </Box>
+
+                            <Box sx={{
+                                display: 'flex',
+                                gap: 2,
+                                flexDirection: { xs: 'column', sm: 'row' },
+                                width: { xs: '100%', md: 'auto' }
+                            }}>
+                                <Button
+                                    variant="outlined"
+                                    color="error"
+                                    onClick={handleClearCart}
+                                    disabled={loading}
+                                    sx={{
+                                        minWidth: { xs: 'auto', sm: 140 },
+                                        py: 1.5,
+                                        borderRadius: 2,
+                                    }}
+                                >
+                                    {loading ? <CircularProgress size={20} /> : 'Clear Cart'}
+                                </Button>
+
+                                <Button
+                                    variant="outlined"
+                                    onClick={handleBackToHome}
+                                    disabled={loading}
+                                    sx={{
+                                        minWidth: { xs: 'auto', sm: 140 },
+                                        py: 1.5,
+                                        borderRadius: 2,
+                                    }}
+                                >
+                                    Continue Shopping
+                                </Button>
+
+                                <Button
+                                    variant="contained"
+                                    onClick={handleCheckout}
+                                    disabled={loading}
+                                    size="large"
+                                    sx={{
+                                        minWidth: { xs: 'auto', sm: 160 },
+                                        py: 1.5,
+                                        borderRadius: 2,
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    {loading ? <CircularProgress size={20} color="inherit" /> : 'Checkout'}
+                                </Button>
+                            </Box>
+                        </Box>
+                    </Container>
+                </Paper>
             )}
 
-            <Box sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, display: 'flex', justifyContent: 'center', p: 2, bgcolor: 'white', boxShadow: 2 }}>
-                <Button
-                    variant="contained"
-                    color="error"
-                    onClick={handleClearCart}
-                    disabled={loading}
-                >
-                    {loading ? <CircularProgress size={24} /> : 'Remove All Items'}
-                </Button>
-                <Box sx={{ mx: 2, textAlign: 'right', alignContent: 'center' }}>
-                    <Button
-                        variant="contained"
-                        color="success"
-                        onClick={handleCheckout}
-                        sx={{ ml: 0.5, p: 0.5 }}
-                        disabled={loading}
-                    >
-                        {loading ? <CircularProgress size={24} /> : 'Proceed to Checkout'}
-                        <Typography variant="body1" sx={{ display: 'block', backgroundColor: 'white', color: 'green', p: 1, borderRadius: 1, ml: 2 }}>
-                            Total : ${totalPrice}
-                        </Typography>
-                    </Button>
-                </Box>
-                <Button
-                    variant="contained"
-                    onClick={handleBackToHome}
-                    sx={{ ml: 0.5 }}
-                    disabled={loading}
-                >
-                    {loading ? <CircularProgress size={24} /> : 'Continue Shopping'}
-                </Button>
-            </Box>
-
-            <Dialog open={openDialog} onClose={handleCloseDialog}>
-                <DialogTitle>Purchase Completed</DialogTitle>
-                <DialogContent>
+            {/* Success Dialog */}
+            <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                PaperProps={{
+                    sx: { borderRadius: 3, textAlign: 'center' }
+                }}
+            >
+                <DialogContent sx={{ pt: 4, pb: 2 }}>
+                    <CelebrationIcon sx={{ fontSize: 64, color: 'success.main', mb: 2 }} />
+                    <DialogTitle sx={{ p: 0, mb: 1 }}>
+                        Purchase Completed!
+                    </DialogTitle>
                     <DialogContentText>
-                        Your purchase was completed successfully.
+                        Thank you for your purchase. Your order has been successfully processed.
                     </DialogContentText>
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog} color="primary">
-                        Close
+                <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
+                    <Button
+                        onClick={handleCloseDialog}
+                        variant="contained"
+                        size="large"
+                        sx={{ minWidth: 120, borderRadius: 2 }}
+                    >
+                        Continue Shopping
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Container>
+        </Box>
     );
 };
 
