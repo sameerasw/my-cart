@@ -1,4 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import baseQueryWithInterceptor from './baseQuery';
 import { CartItem } from '../types/Cart';
 
 interface CartResponse {
@@ -8,7 +9,7 @@ interface CartResponse {
 
 export const cartApi = createApi({
   reducerPath: 'cartApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:1245' }),
+  baseQuery: baseQueryWithInterceptor,
   endpoints: (builder) => ({
     getCartItemsByCustomerId: builder.query<CartResponse, number>({
       query: (customerId) => `/cart/${customerId}`,

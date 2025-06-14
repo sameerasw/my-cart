@@ -1,9 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import baseQueryWithInterceptor from './baseQuery';
 import { Product } from '../types/Product';
 
 export const itemApi = createApi({
   reducerPath: 'itemApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:1245' }),
+  baseQuery: baseQueryWithInterceptor,
   endpoints: (builder) => ({
     getAllProducts: builder.query<Product[], void>({
       query: () => '/product/list',

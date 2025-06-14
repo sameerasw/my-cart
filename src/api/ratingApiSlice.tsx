@@ -1,9 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import baseQueryWithInterceptor from './baseQuery';
 import { Rating } from '../types/Rating';
 
 export const ratingApi = createApi({
     reducerPath: 'ratingApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:1245' }),
+    baseQuery: baseQueryWithInterceptor,
     endpoints: (builder) => ({
         addRating: builder.mutation<Rating, Partial<Rating>>({
             query: (newRating) => ({

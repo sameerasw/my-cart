@@ -1,8 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import config from '../config';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import baseQueryWithInterceptor from './baseQuery';
 import { UserType } from '../types/User';
-
-const API_URL = config.API_BASE_URL;
 
 interface LoginResponse {
   token: string;
@@ -14,7 +12,7 @@ interface LoginResponse {
 
 export const sessionApi = createApi({
   reducerPath: 'sessionApi',
-  baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
+  baseQuery: baseQueryWithInterceptor,
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, { email: string; password: string; userType: UserType }>({
       query: ({ email, password, userType }) => ({
