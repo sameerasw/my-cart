@@ -40,7 +40,20 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // Legacy routes for backward compatibility
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  // Legacy routes
   {
     path: '/login',
     element: <AuthLayout />,
