@@ -14,56 +14,50 @@ import { initializeAuth } from './store/authSlice';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <RootLayout />,
+    element: <MainLayout />,
     children: [
       {
-        path: 'auth',
-        element: <AuthLayout />,
-        children: [
-          {
-            path: 'login',
-            element: <Login />,
-          },
-          {
-            path: 'register',
-            element: <Register />,
-          },
-        ],
+        index: true,
+        element: <Home />,
       },
       {
-        path: '/',
-        element: <MainLayout />,
-        children: [
-          {
-            index: true,
-            element: <Home />,
-          },
-          {
-            path: 'cart',
-            element: <Cart />,
-          },
-        ],
+        path: 'cart',
+        element: <Cart />,
       },
-      // Legacy routes for backward compatibility
+    ],
+  },
+  {
+    path: '/auth',
+    element: <AuthLayout />,
+    children: [
       {
         path: 'login',
-        element: <AuthLayout />,
-        children: [
-          {
-            index: true,
-            element: <Login />,
-          },
-        ],
+        element: <Login />,
       },
       {
         path: 'register',
-        element: <AuthLayout />,
-        children: [
-          {
-            index: true,
-            element: <Register />,
-          },
-        ],
+        element: <Register />,
+      },
+    ],
+  },
+  // Legacy routes for backward compatibility
+  {
+    path: '/login',
+    element: <AuthLayout />,
+    children: [
+      {
+        index: true,
+        element: <Login />,
+      },
+    ],
+  },
+  {
+    path: '/register',
+    element: <AuthLayout />,
+    children: [
+      {
+        index: true,
+        element: <Register />,
       },
     ],
   },

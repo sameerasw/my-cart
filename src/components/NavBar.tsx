@@ -1,13 +1,15 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, TextField, Button, IconButton, Badge, useTheme, Menu, MenuItem } from '@mui/material';
+import { AppBar, Toolbar, Typography, TextField, Button, IconButton, Badge, useTheme, Menu, MenuItem, Box, InputAdornment } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import SearchIcon from '@mui/icons-material/Search';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { UserState } from '../store/AuthState';
 import { useGetCartItemsByCustomerIdQuery } from '../api/cartApiSlice';
 import { clearAuth } from '../store/authSlice';
+import { RootState } from '../store/types';
 
 interface NavBarProps {
   searchTerm?: string;
@@ -16,12 +18,22 @@ interface NavBarProps {
   accountVisible?: boolean;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ searchTerm, onSearchChange, backEnabled = false, accountVisible = true }) => {
+const NavBar: React.FC<NavBarProps> = ({
+  searchTerm = '',
+  onSearchChange,
+  backEnabled = false,
+  accountVisible = true
+}) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userId: customerId, name } = useSelector((state: { auth: UserState }) => state.auth);
-  const { data: cartData } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
+
+  // redux types
+  const { userId: customerId, name, userType } = useSelector((state: RootState) => state.auth);
+
+  const { data: cartData } = useGetCartItemsByCustomerIdQuery(customerId as number, {
+    skip: !customerId
+  });
   const cartItems = cartData?.cartItems || [];
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -43,49 +55,105 @@ const NavBar: React.FC<NavBarProps> = ({ searchTerm, onSearchChange, backEnabled
 
   const toCart = () => {
     if (!customerId) {
-      navigate('/login');
+      navigate('/auth/login');
     } else {
       navigate('/cart');
     }
   };
 
+  const getCartItemCount = () => {
+    return cartItems.reduce((total, item) => total + item.quantity, 0); // Calculate total items in cart
+  };
+
   return (
-    <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1, boxShadow: 'none' }}>
-      <Toolbar>
+    <AppBar
+      position="fixed"
+      sx={{
+        zIndex: theme.zIndex.drawer + 1,
+        background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+        boxShadow: '0 4px 20px rgba(37, 99, 235, 0.25)',
+      }}
+    >
+      <Toolbar sx={{ py: 1 }}>
         {backEnabled && (
-          <IconButton onClick={() => navigate('/')}>
+          <IconButton
+            onClick={() => navigate('/')}
+            sx={{
+              mr: 2,
+              bgcolor: 'rgba(255, 255, 255, 0.1)',
+              '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.2)' }
+            }}
+          >
             <ArrowBackIcon sx={{ color: 'white' }} />
           </IconButton>
         )}
-        <Typography variant="h5" sx={{ ml: 2, flexGrow: 1 }}>
-          My Cart App
+
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 700,
+            background: 'linear-gradient(45deg, #ffffff 30%, #e0e7ff 90%)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            color: 'transparent',
+            mr: 4,
+            cursor: 'pointer',
+          }}
+          onClick={() => navigate('/')}
+        >
+          My Cart
         </Typography>
+
+        <Box sx={{ flexGrow: 1 }} />
+
         {onSearchChange && (
           <TextField
-            fullWidth
-            label="Search"
+            label="Search products..."
             variant="outlined"
             size='small'
             value={searchTerm}
             onChange={onSearchChange}
             sx={{
-              width: '300px',
-              marginLeft: 'auto',
-              marginRight: '10px',
-              backgroundColor: 'white',
-              borderRadius: '10px'
+              width: { xs: '200px', md: '350px' },
+              mr: 3,
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                borderRadius: 2,
+                '&:hover': {
+                  backgroundColor: 'white',
+                },
+                '&.Mui-focused': {
+                  backgroundColor: 'white',
+                },
+              },
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon color="action" />
+                </InputAdornment>
+              ),
             }}
           />
         )}
+
         {accountVisible && (
-          <>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             {name ? (
               <>
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   onClick={handleClick}
                   startIcon={<AccountCircleIcon />}
-                  sx={{ marginRight: 1 }}
+                  sx={{
+                    color: 'white',
+                    borderColor: 'rgba(255, 255, 255, 0.3)',
+                    bgcolor: 'rgba(255, 255, 255, 0.1)',
+                    '&:hover': {
+                      borderColor: 'rgba(255, 255, 255, 0.5)',
+                      bgcolor: 'rgba(255, 255, 255, 0.2)',
+                    },
+                  }}
                 >
                   {name}
                 </Button>
@@ -93,29 +161,68 @@ const NavBar: React.FC<NavBarProps> = ({ searchTerm, onSearchChange, backEnabled
                   anchorEl={anchorEl}
                   open={open}
                   onClose={handleClose}
-                  MenuListProps={{
-                    'aria-labelledby': 'basic-button',
+                  PaperProps={{
+                    sx: { borderRadius: 2, mt: 1 }
                   }}
                 >
+                  <MenuItem onClick={handleClose}>
+                    <Typography variant="body2" color="text.secondary">
+                      {userType === 'VENDOR' ? 'Vendor Account' : 'Customer Account'}
+                    </Typography>
+                  </MenuItem>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
               </>
             ) : (
-              <>
-                <Button variant="contained" onClick={() => navigate('/login')} sx={{ marginRight: 1 }}>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button
+                  variant="outlined"
+                  onClick={() => navigate('/auth/login')}
+                  sx={{
+                    color: 'white',
+                    borderColor: 'rgba(255, 255, 255, 0.3)',
+                    '&:hover': { borderColor: 'rgba(255, 255, 255, 0.5)' }
+                  }}
+                >
                   Login
                 </Button>
-                <Button variant="contained" onClick={() => navigate('/register')}>
+                <Button
+                  variant="contained"
+                  onClick={() => navigate('/auth/register')}
+                  sx={{
+                    bgcolor: 'rgba(255, 255, 255, 0.15)',
+                    '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.25)' }
+                  }}
+                >
                   Register
                 </Button>
-              </>
+              </Box>
             )}
-            <IconButton size="large" color="inherit" onClick={toCart}>
-              <Badge badgeContent={cartItems.reduce((total, item) => total + item.quantity, 0)} color="secondary">
-                <ShoppingCartIcon />
+
+            <IconButton
+              size="large"
+              onClick={toCart}
+              sx={{
+                ml: 1,
+                bgcolor: 'rgba(255, 255, 255, 0.1)',
+                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.2)' }
+              }}
+            >
+              <Badge
+                badgeContent={getCartItemCount()}
+                color="secondary"
+                sx={{
+                  '& .MuiBadge-badge': {
+                    bgcolor: '#f59e0b',
+                    color: 'white',
+                    fontWeight: 600,
+                  }
+                }}
+              >
+                <ShoppingCartIcon sx={{ color: 'white' }} />
               </Badge>
             </IconButton>
-          </>
+          </Box>
         )}
       </Toolbar>
     </AppBar>
