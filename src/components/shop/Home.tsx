@@ -12,10 +12,10 @@ import { useSelector } from 'react-redux';
 import { useOutletContext } from 'react-router-dom';
 import { useGetAllProductsQuery } from '../../api/itemApiSlice';
 import ProductCard from '../ProductCard';
-import { UserState } from '../../store/AuthState';
 import { useGetCartItemsByCustomerIdQuery } from '../../api/cartApiSlice';
 import ProductDetailsDialog from '../ProductDetailsDialog';
 import { Product } from '../../types/Product';
+import { RootState } from '../../store/types';
 
 interface OutletContext {
     searchTerm: string;
@@ -26,7 +26,15 @@ const Home: React.FC = () => {
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [products, setProducts] = useState<Product[]>([]);
+
     const { data, isLoading, error, refetch } = useGetAllProductsQuery();
+
+    const { userId: customerId } = useSelector((state: RootState) => state.auth);
+
+    const { refetch: refetchCartItems } = useGetCartItemsByCustomerIdQuery(
+        customerId as number,
+        { skip: !customerId }
+    );
 
     useEffect(() => {
         if (data) {
@@ -37,9 +45,6 @@ const Home: React.FC = () => {
     useEffect(() => {
         refetch();
     }, [dialogOpen, refetch]);
-
-    const { userId: customerId } = useSelector((state: { auth: UserState }) => state.auth);
-    const { refetch: refetchCartItems } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
 
     useEffect(() => {
         if (customerId) {
@@ -56,6 +61,9 @@ const Home: React.FC = () => {
         setDialogOpen(false);
         setSelectedProduct(null);
         refetch();
+        if (customerId) {
+            refetchCartItems();
+        }
     };
 
     const filteredProducts = products.filter((product) =>

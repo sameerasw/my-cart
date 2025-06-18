@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { UserState } from '../store/AuthState';
 import { useGetCartItemsByCustomerIdQuery } from '../api/cartApiSlice';
 import { clearAuth } from '../store/authSlice';
+import { RootState } from '../store/types';
 
 interface NavBarProps {
   searchTerm?: string;
@@ -17,12 +18,22 @@ interface NavBarProps {
   accountVisible?: boolean;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ searchTerm, onSearchChange, backEnabled = false, accountVisible = true }) => {
+const NavBar: React.FC<NavBarProps> = ({
+  searchTerm = '',
+  onSearchChange,
+  backEnabled = false,
+  accountVisible = true
+}) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userId: customerId, name } = useSelector((state: { auth: UserState }) => state.auth);
-  const { data: cartData } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
+
+  // redux types
+  const { userId: customerId, name, userType } = useSelector((state: RootState) => state.auth);
+
+  const { data: cartData } = useGetCartItemsByCustomerIdQuery(customerId as number, {
+    skip: !customerId
+  });
   const cartItems = cartData?.cartItems || [];
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -44,10 +55,14 @@ const NavBar: React.FC<NavBarProps> = ({ searchTerm, onSearchChange, backEnabled
 
   const toCart = () => {
     if (!customerId) {
-      navigate('/login');
+      navigate('/auth/login');
     } else {
       navigate('/cart');
     }
+  };
+
+  const getCartItemCount = () => {
+    return cartItems.reduce((total, item) => total + item.quantity, 0); // Calculate total items in cart
   };
 
   return (
@@ -81,8 +96,10 @@ const NavBar: React.FC<NavBarProps> = ({ searchTerm, onSearchChange, backEnabled
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             color: 'transparent',
-            mr: 4
+            mr: 4,
+            cursor: 'pointer',
           }}
+          onClick={() => navigate('/')}
         >
           My Cart
         </Typography>
@@ -148,6 +165,11 @@ const NavBar: React.FC<NavBarProps> = ({ searchTerm, onSearchChange, backEnabled
                     sx: { borderRadius: 2, mt: 1 }
                   }}
                 >
+                  <MenuItem onClick={handleClose}>
+                    <Typography variant="body2" color="text.secondary">
+                      {userType === 'VENDOR' ? 'Vendor Account' : 'Customer Account'}
+                    </Typography>
+                  </MenuItem>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
               </>
@@ -155,7 +177,7 @@ const NavBar: React.FC<NavBarProps> = ({ searchTerm, onSearchChange, backEnabled
               <Box sx={{ display: 'flex', gap: 1 }}>
                 <Button
                   variant="outlined"
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/auth/login')}
                   sx={{
                     color: 'white',
                     borderColor: 'rgba(255, 255, 255, 0.3)',
@@ -166,7 +188,7 @@ const NavBar: React.FC<NavBarProps> = ({ searchTerm, onSearchChange, backEnabled
                 </Button>
                 <Button
                   variant="contained"
-                  onClick={() => navigate('/register')}
+                  onClick={() => navigate('/auth/register')}
                   sx={{
                     bgcolor: 'rgba(255, 255, 255, 0.15)',
                     '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.25)' }
@@ -187,7 +209,7 @@ const NavBar: React.FC<NavBarProps> = ({ searchTerm, onSearchChange, backEnabled
               }}
             >
               <Badge
-                badgeContent={cartItems.reduce((total, item) => total + item.quantity, 0)}
+                badgeContent={getCartItemCount()}
                 color="secondary"
                 sx={{
                   '& .MuiBadge-badge': {

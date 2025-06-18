@@ -1,14 +1,18 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { Paper } from '@mui/material';
-import NavBar from '../components/NavBar';
+import RootLayout from './RootLayout';
 
 const AuthLayout: React.FC = () => {
     return (
-        <Paper>
-            <NavBar accountVisible={false} backEnabled={true} />
+        <RootLayout
+            showNavBar={true}
+            navBarProps={{
+                accountVisible: false,
+                backEnabled: true,
+            }}
+        >
             <Outlet />
-        </Paper>
+        </RootLayout>
     );
 };
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Box } from '@mui/material';
-import NavBar from '../components/NavBar';
+import RootLayout from './RootLayout';
 
 const MainLayout: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -11,18 +10,17 @@ const MainLayout: React.FC = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex' }}>
-            <NavBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
-            <Box
-                component="main"
-                sx={{
-                    flexGrow: 1,
-                    paddingTop: '100px',
-                }}
-            >
-                <Outlet context={{ searchTerm }} />
-            </Box>
-        </Box>
+        <RootLayout
+            showNavBar={true}
+            navBarProps={{
+                searchTerm,
+                onSearchChange: handleSearchChange,
+                accountVisible: true,
+                backEnabled: false,
+            }}
+        >
+            <Outlet context={{ searchTerm }} />
+        </RootLayout>
     );
 };
 

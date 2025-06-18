@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import NavBar from '../components/NavBar';
 
 const theme = createTheme({
     palette: {
@@ -111,12 +112,36 @@ const theme = createTheme({
     },
 });
 
-const RootLayout: React.FC = () => {
+interface RootLayoutProps {
+    showNavBar?: boolean;
+    navBarProps?: {
+        searchTerm?: string;
+        onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+        backEnabled?: boolean;
+        accountVisible?: boolean;
+    };
+    children?: React.ReactNode;
+}
+
+const RootLayout: React.FC<RootLayoutProps> = ({
+    showNavBar = true,
+    navBarProps = {},
+    children
+}) => {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
-                <Outlet />
+                {showNavBar && <NavBar {...navBarProps} />}
+                <Box
+                    component="main"
+                    sx={{
+                        paddingTop: showNavBar ? '100px' : 0,
+                        minHeight: '100vh',
+                    }}
+                >
+                    {children || <Outlet />}
+                </Box>
             </Box>
         </ThemeProvider>
     );

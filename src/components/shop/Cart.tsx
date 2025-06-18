@@ -21,15 +21,21 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import { useNavigate } from 'react-router-dom';
 import { useGetCartItemsByCustomerIdQuery, useRemoveCartItemMutation, useClearCartMutation } from '../../api/cartApiSlice';
-import { UserState } from '../../store/AuthState';
+import { RootState } from '../../store/types';
 
 const Cart: React.FC = () => {
     const navigate = useNavigate();
-    const { userId: customerId } = useSelector((state: { auth: UserState }) => state.auth);
 
-    const { data: cartData, isLoading, refetch } = useGetCartItemsByCustomerIdQuery(customerId as number, { skip: !customerId });
+    const { userId: customerId } = useSelector((state: RootState) => state.auth);
+
+    const { data: cartData, isLoading, refetch } = useGetCartItemsByCustomerIdQuery(
+        customerId as number,
+        { skip: !customerId }
+    );
+
     const cartItems = cartData?.cartItems || [];
     const totalPrice = cartData?.totalPrice || 0;
+
     const [removeCartItem] = useRemoveCartItemMutation();
     const [clearCart] = useClearCartMutation();
     const [openDialog, setOpenDialog] = useState(false);
