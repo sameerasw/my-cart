@@ -32,7 +32,7 @@ const CartView: React.FC<CartViewProps> = ({ cartItem, handleRemove }) => {
         height="200"
         image={cartItem.image}
         alt={cartItem.productName}
-        sx={{ objectFit: 'cover' }}
+        sx={{ objectFit: 'cover' }}   
       />
 
       <CardContent sx={{

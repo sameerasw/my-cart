@@ -44,6 +44,9 @@ const router = createBrowserRouter([
           },
         ],
       },
+
+
+      
       // Legacy routes for backward compatibility
       {
         path: 'login',
